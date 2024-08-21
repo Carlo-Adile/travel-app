@@ -17,4 +17,9 @@ export default {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* #app {
+  min-height: 100vh;
+  background-color: rgb(243, 241, 241);
+} */
+</style>

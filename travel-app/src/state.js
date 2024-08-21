@@ -3,12 +3,16 @@ import { reactive } from 'vue';
 
 // Usa reactive per creare uno stato reattivo
 export const state = reactive({
+	/* profile */
 	base_api_url: 'http://localhost:8000/api',
 	auth: {
 		isLoggedIn: false,
 		user: null,
 		token: null
-	}
+	},
+	/* travels and steps */
+	travel_api_url: 'http',
+	travels: [],
 });
 
 // Aggiorna lo stato
@@ -33,7 +37,7 @@ export const getters = {
 	}
 };
 
-// Metodi
+// Metodi profile
 export const login = async (credentials) => {
 	try {
 		const response = await axios.post(`${state.base_api_url}/login`, credentials);
@@ -68,6 +72,21 @@ export const updateProfile = async (profileData) => {
 		return response.data;
 	} catch (error) {
 		console.error('Modifica al profilo fallita', error);
+		throw error;
+	}
+};
+
+// Metodi travel
+export const getTravel = async () => {
+	try {
+		const response = await axios.get(`${state.base_api_url}/travels`, {
+			headers: { Authorization: `Bearer ${getters.getToken()}` }
+		});
+		state.travels = response.data;
+		console.log("viaggi recuperati: ", state.travels);
+		return response.data;
+	} catch (error) {
+		console.error('Non è stato possibile recuperare i tuoi viaggi', error);
 		throw error;
 	}
 };

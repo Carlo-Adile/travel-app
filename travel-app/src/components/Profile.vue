@@ -84,15 +84,15 @@ export default {
 
 <template>
 	<div class="profile-container">
-		<h1>User Profile</h1>
 
 		<!-- Se l'utente è loggato, mostra i dettagli -->
 		<div v-if="isLoggedIn && user">
-			<p><strong>Name:</strong> {{ user.name }}</p>
-			<p><strong>Email:</strong> {{ user.email }}</p>
+			<h3>Benvenuto</h3>
+			<h2 class="fw-light">{{ user.name }}</h2>
+			<p class="text-secondary fw-medium">crea, personalizza ed esplora i tuoi viaggi</p>
 
 			<!-- Form per aggiornare il profilo -->
-			<h2>Update Profile</h2>
+			<!-- <h2>Update Profile</h2>
 			<form @submit.prevent="updateProfile">
 				<div>
 					<label for="name">Name:</label>
@@ -103,25 +103,29 @@ export default {
 					<input type="email" v-model="updatedEmail" id="email" />
 				</div>
 				<button type="submit">Update</button>
-			</form>
+			</form> -->
 
 			<!-- Logout -->
-			<button @click="logout">Logout</button>
+			<!-- <button @click="logout">Logout</button> -->
 		</div>
 
 		<!-- Se l'utente non è loggato, mostra il form di login -->
 		<div v-else>
 			<h3>Login</h3>
 			<form @submit.prevent="login">
-				<div>
-					<label for="email">Email:</label>
-					<input type="email" v-model="loginEmail" id="login-email" />
+
+				<div class="input-group mb-3">
+					<input type="email" v-model="loginEmail" id="login-email" class="form-control" placeholder="Email"
+						aria-label="Email" aria-describedby="basic-addon1">
+					<span class="input-group-text" id="login-email">@</span>
 				</div>
-				<div>
-					<label for="password">Password:</label>
-					<input type="password" v-model="loginPassword" id="login-password" />
+
+				<div class="input mb-3">
+					<input type="password" v-model="loginPassword" id="login-password" class="form-control"
+						placeholder="Password" aria-label="Email" aria-describedby="login-password">
 				</div>
-				<button type="submit">Login</button>
+
+				<button type="submit" class="btn btn-primary">Accedi</button>
 			</form>
 		</div>
 	</div>
