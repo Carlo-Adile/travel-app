@@ -1,25 +1,23 @@
 <script>
-/* import Profile from '../components/Profile.vue'; */
-import Profile from './components/Profile.vue'
+import AppFooter from './components/AppFooter.vue';
 
 export default {
   name: 'App',
   components: {
-    Profile,
+    AppFooter
   }
 }
 </script>
 
 <template>
   <div id="app">
-    <Profile />
     <router-view></router-view>
   </div>
+  <AppFooter />
 </template>
 
 <style scoped>
-/* #app {
-  min-height: 100vh;
-  background-color: rgb(243, 241, 241);
-} */
+#app {
+  margin-bottom: 75px;
+}
 </style>

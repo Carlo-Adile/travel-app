@@ -50,6 +50,28 @@ export const login = async (credentials) => {
 	}
 };
 
+export const register = async (userData) => {
+	try {
+		const formData = new FormData();
+		Object.keys(userData).forEach(key => {
+			formData.append(key, userData[key]);
+		});
+
+		const response = await axios.post(`${state.base_api_url}/register`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+
+		const { user, access_token } = response.data;
+		mutations.setAuthStatus(true, user, access_token);
+		return response.data;
+	} catch (error) {
+		console.error('Registrazione fallita', error);
+		throw error.response.data;
+	}
+};
+
 export const logout = async () => {
 	try {
 		await axios.post(`${state.base_api_url}/logout`, {}, {
@@ -83,7 +105,7 @@ export const getTravel = async () => {
 			headers: { Authorization: `Bearer ${getters.getToken()}` }
 		});
 		state.travels = response.data;
-		console.log("viaggi recuperati: ", state.travels);
+		/* console.log("viaggi recuperati: ", state.travels); */
 		return response.data;
 	} catch (error) {
 		console.error('Non è stato possibile recuperare i tuoi viaggi', error);
