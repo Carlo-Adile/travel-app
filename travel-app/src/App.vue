@@ -13,7 +13,7 @@ export default {
   <div id="app">
     <router-view></router-view>
   </div>
-  <AppFooter />
+  <!-- <AppFooter /> -->
 </template>
 
 <style scoped>

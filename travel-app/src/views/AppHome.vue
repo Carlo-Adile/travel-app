@@ -1,10 +1,9 @@
 <script>
 import axios from 'axios';
 import TravelCard from '../components/TravelCard.vue';
-import { state, getters, getTravel } from '../state.js';
+import { state, getters, login, logout, updateProfile, register, getTravel } from '../state.js';
 import DatePicker from 'vue3-datepicker';
 import Profile from '../components/Profile.vue';
-import ActionCard from '../components/ActionCard.vue';
 import gsap from 'gsap';
 
 export default {
@@ -12,8 +11,7 @@ export default {
 	components: {
 		TravelCard,
 		DatePicker,
-		Profile,
-		ActionCard
+		Profile
 	},
 	data() {
 		return {
@@ -23,6 +21,7 @@ export default {
 				title: '',
 				start_date: null,
 				end_date: null,
+				cover_image: null
 			}
 		}
 	},
@@ -54,6 +53,7 @@ export default {
 		}
 	},
 	methods: {
+		/* metodi per ottenere i dati */
 		async loadTravels() {
 			try {
 				const travels = await getTravel();
@@ -63,34 +63,47 @@ export default {
 				console.error('Errore nel recupero dei viaggi:', error);
 			}
 		},
+		/* metodi per la creazione */
+		handleImageUpload(event) {
+			const file = event.target.files[0];
+			if (file) {
+				this.newTravel.cover_image = file;
+			}
+		},
 		async addNewTravel() {
 			const formatDate = (date) => {
-				// Restituisce solo la parte data in formato YYYY-MM-DD
 				if (!date) return null;
 				const d = new Date(date);
 				return d.toISOString().split('T')[0];
 			};
-			const travelData = {
-				title: this.newTravel.title,
-				start_date: formatDate(this.newTravel.start_date),
-				end_date: formatDate(this.newTravel.end_date)
-			};
-			// Axios post
+
+			// Creiamo un oggetto FormData
+			const formData = new FormData();
+			formData.append('title', this.newTravel.title);
+			formData.append('start_date', formatDate(this.newTravel.start_date));
+			formData.append('end_date', formatDate(this.newTravel.end_date));
+
+			// Se l'utente ha selezionato un'immagine, la aggiungiamo al FormData
+			if (this.newTravel.cover_image) {
+				formData.append('cover_image', this.newTravel.cover_image);
+			}
+
+			// Axios post per inviare il FormData
 			try {
 				const token = state.auth.token;
-				const response = await axios.post(`${state.base_api_url}/travels`, travelData, {
+				await axios.post(`${state.base_api_url}/travels`, formData, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
-						'Content-Type': 'application/json'
+						'Content-Type': 'multipart/form-data'
 					}
 				});
-				// Aggiorna dati
 				this.loadTravels();
 				this.showForm = false;
 			} catch (error) {
-				console.error("errore nella creazione di un nuovo viaggio: ", error);
+				console.error("Errore nella creazione di un nuovo viaggio: ", error);
 			}
 		},
+		/* form */
 		toggleForm() {
 			this.showForm = !this.showForm;
 		},
@@ -104,7 +117,7 @@ export default {
 				opacity: 1,
 				x: 0,
 				duration: 1,
-				delay: el.dataset.index * 0.2
+				delay: el.dataset.index * 0.15
 			})
 		}
 	}
@@ -116,26 +129,41 @@ export default {
 		<div class="row">
 			<Profile />
 
-			<ActionCard title="Hai aggiunto" :count="travels.length + ' viaggi'" buttonText="Aggiungi un viaggio"
-				imgSrc="/src/assets/travel-luggage.png" @button-click="toggleForm" v-if="travels.length" />
+			<!-- bottone aggiungi un viaggio -->
+			<div class="my-3" v-if="isLoggedIn">
+				<button class="btn btn-sm rounded-pill w-100 border fw-bold text-white p-2" @click="toggleForm()"
+					style="background-color: var(--tertiary-color);">Aggiungi un nuovo viaggio</button>
+			</div>
 
-			<ActionCard title="Aggiungi il tuo primo viaggio" buttonText="Aggiungi un viaggio"
-				imgSrc="/src/assets/travel-luggage.png" @button-click="toggleForm" v-if="travels.length === 0 && isLoggedIn" />
+			<!-- form per aggiungere un viaggio -->
+			<form v-if="showForm" @submit.prevent="addNewTravel" class="modal-overlay">
+				<div class="modal-content">
+					<div class="mb-2">
+						<label for="title" class="form-label">Titolo</label>
+						<input type="text" v-model="newTravel.title" id="title" placeholder="Titolo"
+							class="form-control" required>
+					</div>
 
-			<form v-if="showForm" @submit.prevent="addNewTravel">
-				<div class="mb-3">
-					<label for="title" class="form-label">Titolo del viaggio</label>
-					<input type="text" v-model="newTravel.title" id="title" class="form-control" required>
+					<div class="d-flex flex-wrap gap-2 mb-2">
+						<div>
+							<label for="start_date" class="form-label">Data di inizio</label>
+							<DatePicker v-model="newTravel.start_date" id="start_date" class="form-control" required />
+						</div>
+						<div>
+							<label for="end_date" class="form-label">Data di fine</label>
+							<DatePicker v-model="newTravel.end_date" id="end_date" class="form-control" required />
+						</div>
+					</div>
+
+					<div class="mb-2">
+						<label for="cover_image" class="form-label">Immagine di copertina</label>
+						<input type="file" @change="handleImageUpload" id="cover_image" class="form-control">
+					</div>
+					<div class="d-flex gap-2 mb-2 mt-3">
+						<button type="submit" class="btn btn-primary rounded-pill">Crea Viaggio</button>
+						<button type="button" class="btn border rounded-pill" @click="toggleForm">Annulla</button>
+					</div>
 				</div>
-				<div class="mb-3">
-					<label for="start_date" class="form-label">Data di inizio</label>
-					<DatePicker v-model="newTravel.start_date" id="start_date" class="form-control" required />
-				</div>
-				<div class="mb-3">
-					<label for="end_date" class="form-label">Data di fine</label>
-					<DatePicker v-model="newTravel.end_date" id="end_date" class="form-control" required />
-				</div>
-				<button type="submit" class="btn btn-primary">Crea Viaggio</button>
 			</form>
 
 			<!-- Accordion per i viaggi -->
@@ -144,34 +172,39 @@ export default {
 				<div class="accordion-item">
 					<h2 class="accordion-header">
 						<button class="accordion-button" type="button" data-bs-toggle="collapse"
-							data-bs-target="#flush-collapseFuture" aria-expanded="true" aria-controls="flush-collapseFuture">
+							data-bs-target="#flush-collapseFuture" aria-expanded="true"
+							aria-controls="flush-collapseFuture">
 							I tuoi prossimi viaggi
 						</button>
 					</h2>
 					<div id="flush-collapseFuture" class="accordion-collapse collapse show">
 						<div class="accordion-body">
 							<transition-group appear @before-enter="beforeEnter" @enter="enter">
-								<div class="col-12" v-for="(travel, index) in futureTravels" :key="travel.id" :data-index="index">
+								<div class="col-12" v-for="(travel, index) in futureTravels" :key="travel.id"
+									:data-index="index">
 									<TravelCard :travel="travel" />
 								</div>
 							</transition-group>
 						</div>
 					</div>
 				</div>
-
 				<!-- Accordion per i viaggi completati -->
 				<div class="accordion-item">
 					<h2 class="accordion-header">
 						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#flush-collapsePast" aria-expanded="false" aria-controls="flush-collapsePast">
+							data-bs-target="#flush-collapsePast" aria-expanded="false"
+							aria-controls="flush-collapsePast">
 							Viaggi completati
 						</button>
 					</h2>
 					<div id="flush-collapsePast" class="accordion-collapse collapse">
 						<div class="accordion-body">
-							<div class="col-12" v-for="(travel, index) in pastTravels" :key="travel.id">
-								<TravelCard :travel="travel" />
-							</div>
+							<transition-group appear @before-enter="beforeEnter" @enter="enter">
+								<div class="col-12" v-for="(travel, index) in pastTravels" :key="travel.id"
+									:data-index="index">
+									<TravelCard :travel="travel" />
+								</div>
+							</transition-group>
 						</div>
 					</div>
 				</div>
@@ -183,5 +216,16 @@ export default {
 <style scoped>
 #my_action_card {
 	background-color: var(--primary-color);
+}
+
+#search_bar {
+	/* width: 95%; */
+	margin: 0 auto;
+	background-color: #fff;
+
+	input[type="text"] {
+		border: none;
+		outline: none;
+	}
 }
 </style>

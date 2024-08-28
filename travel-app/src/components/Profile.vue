@@ -22,8 +22,14 @@ export default {
 			registerPasswordConfirmation: '',
 			coverImage: null,
 
+			// Visibilità Form
 			showForm: false,
 			showRegisterForm: false,
+			showUpdateProfileForm: false,
+
+			// Variabili per il popover
+			isPopoverVisible: false,
+
 		};
 	},
 	mounted() {
@@ -93,7 +99,7 @@ export default {
 				console.log('Registrazione avvenuta con successo:', response.data);
 
 				// Dopo la registrazione, esegui il login
-				await this.login(); // Assicurati che l'utente sia loggato automaticamente
+				await this.login();
 
 				// Aggiorna i dati del profilo
 				this.refreshData();
@@ -114,13 +120,30 @@ export default {
 		// Metodo per aggiornare il profilo
 		async updateProfile() {
 			try {
+				// Prepara i dati da inviare per l'aggiornamento del profilo
 				const profileData = {
 					name: this.updatedName,
 					email: this.updatedEmail,
 				};
-				const response = await updateProfile(profileData); // Chiamata diretta alla funzione updateProfile
+
+				// Richiama la funzione updateProfile di state.js
+				const response = await updateProfile(profileData);
+
+				// Verifica lo stato dell'utente
+				if (!this.isLoggedIn) {
+					console.error('User appears to be logged out after update.');
+				}
+
+				this.user.name = this.updatedName;
+				this.refreshData();
+				// Gestisci la risposta, se necessario
 				console.log('Profile updated successfully:', response);
+
+				// Potresti voler chiudere il form dopo l'aggiornamento
+				this.closeForms();
+
 			} catch (error) {
+				// Gestisci l'errore, se necessario
 				console.error('Profile update failed:', error);
 			}
 		},
@@ -129,9 +152,11 @@ export default {
 			this.updatedName = this.user.name;
 			this.updatedEmail = this.user.email;
 		},
-		openMenu() {
-			// Logica per aprire il menu, ad esempio, mostrare un menu a discesa o una finestra di dialogo
-			console.log('Menu opened');
+		/* Metodi per mostrare i Form */
+		// Nascondi i form
+		closeForms() {
+			this.showUpdateProfileForm = false;
+			this.showLogoutConfirm = false;
 		},
 		toggleForm() {
 			this.showForm = !this.showForm;
@@ -140,6 +165,14 @@ export default {
 		toggleRegisterForm() {
 			this.showForm = !this.showForm;
 			this.showRegisterForm = !this.showRegisterForm;
+		},
+		togglePopover() {
+			this.isPopoverVisible = !this.isPopoverVisible;
+		},
+		openUpdateProfileForm() {
+			console.log("update richiamato");
+			this.showUpdateProfileForm = true;
+			this.isPopoverVisible = false;
 		}
 	}
 };
@@ -150,32 +183,63 @@ export default {
 	<div class="container p-0">
 
 		<!-- utente loggato -->
-		<div v-if="isLoggedIn && user" class="row px-3 pt-3">
+		<div v-if="isLoggedIn && user" class="row px-3 pt-3" id="profile_header">
 			<!-- Se l'utente è loggato, mostra i dettagli -->
 			<div class="d-flex align-items-center justify-content-between">
-				<div class="d-flex align-items-center">
+				<!-- info profilo -->
+				<div class="d-flex align-items-center mb-2">
 					<!-- Icona profilo -->
 					<img v-if="user.cover_image" :src="`${'http://localhost:8000'}/storage/${user.cover_image}`" alt=""
 						class="profile-picture">
 					<img v-else src="https://placehold.co/400" alt="Profile Picture" class="profile-picture" />
 					<h6 class="p-0 m-0">Benvenuto, <br> {{ user.name }}</h6>
 				</div>
-				<!-- Icona menu -->
-				<button class="btn fs-4 p-0 m-0" @click="openMenu">
-					<i class="fa-solid fa-ellipsis-v"></i> <!-- Icona menu -->
-				</button>
+
+				<!-- Icona menu con popover -->
+				<div class="popover-container">
+					<button @click="togglePopover" class="popover-button">
+						<i class="fa-solid fa-ellipsis-v"></i>
+					</button>
+					<div v-if="isPopoverVisible" class="popover-content">
+						<p @click="openUpdateProfileForm">Impostazioni</p>
+						<p @click="logout">Logout</p>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- Form per aggiornare il profilo -->
+			<div v-if="showUpdateProfileForm">
+				<h3>Aggiorna profilo</h3>
+				<form @submit.prevent="updateProfile">
+					<div class="input-group mb-2">
+						<span class="input-group-text" id="update-name">#</span>
+						<input type="text" v-model="updatedName" placeholder="Nome utente" id="update-name"
+							class="form-control" />
+					</div>
+					<div class="input-group mb-2">
+						<span class="input-group-text" id="update-email">@</span>
+						<input type="email" v-model="updatedEmail" id="update-email" placeholder="Email"
+							class="form-control" />
+					</div>
+					<div class="d-flex gap-2 mb-3">
+						<button type="submit" class="btn btn-primary rounded-pill fw-medium">Aggiorna</button>
+						<button type="button" @click="closeForms"
+							class="btn border rounded-pill fw-medium">Annulla</button>
+					</div>
+				</form>
 			</div>
 		</div>
 
 		<!-- utente non loggato -->
-		<div v-else id="my_login_hero">
+		<div v-if="isLoggedIn === false" id="my_login_hero">
 
 			<div id="hero_image" class="mb-3">
-				<img src="/src/assets/login_hero_short.png" alt="" class="img-fluid">
+				<img src="/src/assets/login_hero.png" alt="" class="img-fluid">
 			</div>
 
 			<div class="px-3">
-				<h1 class="mb-3">Pronto a partire per la tua <br>
+				<h1 class="mb-2">Pronto a partire per la tua <br>
 					<span>prossima avventura?</span>
 				</h1>
 				<p class="fw-medium text-secondary">
@@ -192,21 +256,24 @@ export default {
 					<div v-if="showForm">
 						<h3>Login</h3>
 						<form @submit.prevent="login">
-							<div class="input-group mb-3">
+							<div class="input-group mb-2">
 								<span class="input-group-text" id="login-email">@</span>
-								<input type="email" v-model="loginEmail" id="login-email" class="form-control" placeholder="Email"
-									aria-label="Email" aria-describedby="basic-addon1" />
+								<input type="email" v-model="loginEmail" id="login-email" class="form-control"
+									placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" />
 							</div>
 
-							<div class="input-group mb-3">
-								<span class="input-group-text" id="login-password"><i class="fa-solid fa-lock"></i></span>
+							<div class="input-group mb-2">
+								<span class="input-group-text" id="login-password"><i
+										class="fa-solid fa-lock"></i></span>
 								<input type="password" v-model="loginPassword" id="login-password" class="form-control"
 									placeholder="Password" aria-label="Password" aria-describedby="login-password" />
 							</div>
 
-							<button type="submit" class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Accedi</button>
+							<button type="submit"
+								class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Accedi</button>
 						</form>
-						<p>Non hai ancora un account? <strong @click="toggleRegisterForm()">Iscriviti</strong></p>
+						<p class="pb-3">Non hai ancora un account? <strong
+								@click="toggleRegisterForm()">Iscriviti</strong></p>
 					</div>
 				</div>
 
@@ -214,66 +281,51 @@ export default {
 				<div v-if="showRegisterForm">
 					<h3>Registrazione</h3>
 					<form @submit.prevent="register">
-						<div class="input-group mb-3">
+						<div class="input-group mb-2">
 							<span class="input-group-text" id="register-name"><i class="fa-regular fa-user"></i></span>
-							<input type="text" v-model="registerName" id="register-name" class="form-control" placeholder="Nome"
-								aria-label="Nome" />
+							<input type="text" v-model="registerName" id="register-name" class="form-control"
+								placeholder="Nome" aria-label="Nome" />
 						</div>
 
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-email">@</span>
-							<input type="email" v-model="registerEmail" id="register-email" class="form-control" placeholder="Email"
-								aria-label="Email" />
+							<input type="email" v-model="registerEmail" id="register-email" class="form-control"
+								placeholder="Email" aria-label="Email" />
 						</div>
 
-						<div class="input-group mb-3">
-							<span class="input-group-text" id="register-password"><i class="fa-solid fa-lock"></i></span>
-							<input type="password" v-model="registerPassword" id="register-password" class="form-control"
-								placeholder="Password" aria-label="Password" />
+						<div class="input-group mb-2">
+							<span class="input-group-text" id="register-password"><i
+									class="fa-solid fa-lock"></i></span>
+							<input type="password" v-model="registerPassword" id="register-password"
+								class="form-control" placeholder="Password" aria-label="Password" />
 						</div>
 
-						<div class="input mb-3">
-							<input type="password" v-model="registerPasswordConfirmation" id="register-password-confirmation"
-								class="form-control" placeholder="Conferma Password" aria-label="Conferma Password" />
+						<div class="input mb-2">
+							<input type="password" v-model="registerPasswordConfirmation"
+								id="register-password-confirmation" class="form-control" placeholder="Conferma Password"
+								aria-label="Conferma Password" />
 						</div>
 
-						<div class="input mb-3">
+						<div class="input mb-2">
 							<input type="file" @change="handleFileUpload" id="cover-image" class="form-control"
 								aria-label="Cover Image" />
 						</div>
 
-						<button type="submit" class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Iscriviti</button>
+						<button type="submit"
+							class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Iscriviti</button>
 					</form>
 					<p>Hai già un account? <strong @click="toggleForm">Accedi</strong></p>
 				</div>
 
 			</div>
-
 		</div>
 	</div>
-
-	<!-- Form per aggiornare il profilo -->
-	<!-- <h2>Update Profile</h2>
-			<form @submit.prevent="updateProfile">
-				<div>
-					<label for="name">Name:</label>
-					<input type="text" v-model="updatedName" id="name" />
-				</div>
-				<div>
-					<label for="email">Email:</label>
-					<input type="email" v-model="updatedEmail" id="email" />
-				</div>
-				<button type="submit">Update</button>
-			</form> -->
-
-	<!-- Logout -->
-	<!-- <button @click="logout">Logout</button> -->
 
 </template>
 
 <style scoped>
 #my_login_hero {
-	/* height: 90vh; */
+	height: 90vh;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -294,46 +346,28 @@ export default {
 	margin: 0;
 	padding: 0;
 	width: 100vw;
-	/* Copre tutta la larghezza del viewport */
 	height: 60vh;
-	/* 60% dell'altezza del viewport */
 	overflow: hidden;
 }
 
-
-/* .profile-container {
-	max-width: 800px;
+#search_bar {
+	width: 95%;
 	margin: 0 auto;
-	padding: 15px;
-} */
+	background-color: #fff;
 
-/* .profile-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-} */
-
-/* .profile-info {
-	display: flex;
-	align-items: center;
-} */
+	input[type="text"] {
+		border: none;
+		outline: none;
+	}
+}
 
 .profile-picture {
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
-	/* Fa diventare l'immagine rotonda */
 	margin-right: 10px;
 	object-fit: cover;
-	/* Assicura che l'immagine non venga distorta */
 }
-
-/* .menu-button {
-	background: none;
-	border: none;
-	font-size: 1.5rem;
-	cursor: pointer;
-} */
 
 button {
 	margin-top: 10px;
