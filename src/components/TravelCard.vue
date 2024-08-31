@@ -69,7 +69,7 @@ export default {
 
 				console.log('Dati inviati:', Array.from(formData.entries()));
 
-				const response = await axios.post(`${state.base_api_url}/travels/${this.travel.id}`, formData, {
+				const response = await axios.post(`${base_api_url}/travels/${this.travel.id}`, formData, {
 					headers: {
 						'Authorization': `Bearer ${getters.getToken()}`,
 						'Content-Type': 'application/x-www-form-urlencoded'
