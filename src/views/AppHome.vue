@@ -96,7 +96,7 @@ export default {
 			// Axios post per inviare il FormData
 			try {
 				const token = state.auth.token;
-				await axios.post(`${baseApiUrl}/travels`, formData, {
+				await axios.post(`${this.baseApiUrl}/travels`, formData, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'multipart/form-data'
