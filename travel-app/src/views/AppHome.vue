@@ -6,6 +6,7 @@ import DatePicker from 'vue3-datepicker';
 import Profile from '../components/Profile.vue';
 import gsap from 'gsap';
 
+
 export default {
 	name: 'AppHome',
 	components: {
@@ -17,6 +18,7 @@ export default {
 		return {
 			travels: [],
 			showForm: false,
+			highlightedTravelId: null,
 			newTravel: {
 				title: '',
 				start_date: null,
@@ -88,6 +90,8 @@ export default {
 				formData.append('cover_image', this.newTravel.cover_image);
 			}
 
+			console.log('Dati inviati:', Array.from(formData.entries()));
+
 			// Axios post per inviare il FormData
 			try {
 				const token = state.auth.token;
@@ -106,6 +110,9 @@ export default {
 		/* form */
 		toggleForm() {
 			this.showForm = !this.showForm;
+		},
+		handleZIndexUpdate(travelId) {
+			this.highlightedTravelId = travelId;
 		},
 		/* animation */
 		beforeEnter(el) {
@@ -159,6 +166,7 @@ export default {
 						<label for="cover_image" class="form-label">Immagine di copertina</label>
 						<input type="file" @change="handleImageUpload" id="cover_image" class="form-control">
 					</div>
+
 					<div class="d-flex gap-2 mb-2 mt-3">
 						<button type="submit" class="btn btn-primary rounded-pill">Crea Viaggio</button>
 						<button type="button" class="btn border rounded-pill" @click="toggleForm">Annulla</button>
@@ -180,9 +188,10 @@ export default {
 					<div id="flush-collapseFuture" class="accordion-collapse collapse show">
 						<div class="accordion-body">
 							<transition-group appear @before-enter="beforeEnter" @enter="enter">
-								<div class="col-12" v-for="(travel, index) in futureTravels" :key="travel.id"
-									:data-index="index">
-									<TravelCard :travel="travel" />
+								<div v-for="(travel, index) in futureTravels" :key="travel.id" :data-index="index"
+									class="travel_card" :class="{ 'highlighted': highlightedTravelId === travel.id }">
+									<TravelCard :travel="travel" @update-zindex="handleZIndexUpdate"
+										@updated-travels="loadTravels" />
 								</div>
 							</transition-group>
 						</div>
@@ -214,18 +223,29 @@ export default {
 </template>
 
 <style scoped>
-#my_action_card {
-	background-color: var(--primary-color);
+.popover-container {
+
+	position: relative;
+	z-index: 1001;
 }
 
-#search_bar {
-	/* width: 95%; */
-	margin: 0 auto;
-	background-color: #fff;
+.popover-content {
+	position: absolute;
+	z-index: 9999;
+}
 
-	input[type="text"] {
-		border: none;
-		outline: none;
-	}
+.modal-overlay {
+	z-index: 100000;
+}
+
+.modal-content {
+	z-index: 100001;
+}
+
+.highlighted {
+	z-index: 1000;
+	/* valore alto per il viaggio evidenziato */
+	position: relative;
+	/* assicurati che il z-index funzioni */
 }
 </style>

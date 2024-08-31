@@ -1,17 +1,26 @@
 <script>
-import { state, formattedDateRange } from '../state.js';
+import { state, formattedDateRange, updateTravel, getters } from '../state.js';
+import DatePicker from 'vue3-datepicker';
+import axios from 'axios';
 
 export default {
 	name: 'TravelCard',
+	components: {
+		DatePicker
+	},
 	data() {
 		return {
 			base_api_url: state.base_api_url || 'http://localhost:8000',
+			/* aggiorna viaggio */
+			updatedTravelTitle: this.travel.title,
+			updatedTravelStartDate: new Date(this.travel.start_date),
+			updatedTravelEndDate: new Date(this.travel.end_date),
+			updatedCoverImage: null,
+			/* forms */
 			isPopoverVisible: false,
+			showUpdateTravelForm: false,
 			showConfirmDeleteTravel: false
 		}
-	},
-	components: {
-
 	},
 	props: {
 		travel: {
@@ -39,11 +48,50 @@ export default {
 		getFormattedDateRange() {
 			return formattedDateRange(this.travel.start_date, this.travel.end_date);
 		},
-		togglePopover() {
-			this.isPopoverVisible = !this.isPopoverVisible;
+		/* medoti per aggiornare il viaggio */
+		async updateTravel() {
+			const formData = new FormData();
+			const formatDate = (date) => {
+				if (!date) return null;
+				const d = new Date(date);
+				return d.toISOString().split('T')[0];
+			};
+
+			formData.append('title', this.updatedTravelTitle || this.travel.title);
+			formData.append('start_date', formatDate(this.updatedTravelStartDate) || this.travel.start_date);
+			formData.append('end_date', formatDate(this.updatedTravelEndDate) || this.travel.end_date);
+			formData.append('_method', 'PATCH');
+
+			if (this.updatedCoverImage) {
+				formData.append('cover_image', this.updatedCoverImage);
+			}
+			try {
+
+				console.log('Dati inviati:', Array.from(formData.entries()));
+
+				const response = await axios.post(`${this.base_api_url}/travels/${this.travel.id}`, formData, {
+					headers: {
+						'Authorization': `Bearer ${getters.getToken()}`,
+						'Content-Type': 'application/x-www-form-urlencoded'
+					}
+				});
+
+				this.closeForms();
+				this.updatedTravelTitle = '';
+				this.updatedTravelStartDate = null;
+				this.updatedTravelEndDate = null;
+				this.updatedCoverImage = null;
+				this.$emit('updated-travels');
+
+			} catch (error) {
+				console.error('Errore durante la modifica del viaggio', error.response ? error.response.data : error);
+			}
 		},
-		openConfirmTravelDelete() {
-			this.showConfirmDeleteTravel = true;
+		handleImageUpload(event) {
+			const file = event.target.files[0];
+			if (file) {
+				this.updatedCoverImage = file;
+			}
 		},
 		async deleteTravel() {
 			try {
@@ -59,13 +107,31 @@ export default {
 					}
 				});
 
+				this.$emit('updated-travels');
+
 				// Gestisci la risposta se necessario
 				console.log('Viaggio eliminata con successo');
 
 			} catch (error) {
-				console.error('Errore durante l\'eliminazione dello step:', error.response?.data || error);
+				console.error('Errore durante l\'eliminazione del viaggio:', error.response?.data || error);
 			}
-		}
+		},
+		/* forms */
+		togglePopover() {
+			this.isPopoverVisible = !this.isPopoverVisible;
+		},
+		openConfirmTravelDelete() {
+			this.showConfirmDeleteTravel = true;
+		},
+		toggleUpdateTravelForm() {
+			this.showUpdateTravelForm = !this.showUpdateTravelForm;
+			this.isPopoverVisible = !this.isPopoverVisible;
+			this.$emit('update-zindex', this.travel.id);
+		},
+		closeForms() {
+			this.showUpdateTravelForm = false;
+			this.isPopoverVisible = false;
+		},
 	}
 }
 </script>
@@ -101,8 +167,40 @@ export default {
 				<i class="fa-solid fa-ellipsis-v"></i>
 			</button>
 			<div v-if="isPopoverVisible" class="popover-content">
-				<p @click="openUpdateTravelForm">Modifica viaggio</p>
+				<p @click="toggleUpdateTravelForm">Modifica viaggio</p>
 				<p @click="deleteTravel">Elimina</p>
+			</div>
+		</div>
+
+		<!-- Form per aggiornare il viaggio -->
+		<div v-show="showUpdateTravelForm" class="modal-overlay" @click="closeForms">
+			<div @click.stop class="modal-content">
+				<h3>Aggiorna viaggio</h3>
+				<form @submit.prevent="updateTravel">
+					<div class="input-group mb-2">
+						<span class="input-group-text" id="update-title">#</span>
+						<input type="text" v-model="updatedTravelTitle" placeholder="Titolo" id="update-title" class="form-control"
+							required />
+					</div>
+					<div class="d-flex flex-wrap gap-2 mb-2">
+						<div>
+							<label for="start_date" class="form-label">Data di inizio</label>
+							<DatePicker v-model="updatedTravelStartDate" id="start_date" class="form-control" required />
+						</div>
+						<div>
+							<label for="end_date" class="form-label">Data di fine</label>
+							<DatePicker v-model="updatedTravelEndDate" id="end_date" class="form-control" required />
+						</div>
+					</div>
+					<div class="mb-2">
+						<label for="cover_image" class="form-label">Immagine di copertina</label>
+						<input type="file" @change="handleImageUpload" id="cover_image" class="form-control">
+					</div>
+					<div class="d-flex gap-2 mb-3">
+						<button type="submit" class="btn btn-primary rounded-pill fw-medium">Conferma</button>
+						<button type="button" @click="closeForms" class="btn border rounded-pill fw-medium">Annulla</button>
+					</div>
+				</form>
 			</div>
 		</div>
 
@@ -123,7 +221,6 @@ export default {
 
 	.image-container {
 		flex: 0 0 auto;
-		/* Prevents the image container from shrinking */
 		width: 100px;
 		height: 100px;
 		margin-right: 8px;
@@ -137,7 +234,6 @@ export default {
 
 	.info-container {
 		flex: 1;
-		/* Allows this section to take up remaining space */
 	}
 
 	p {
@@ -163,5 +259,26 @@ export default {
 	margin-left: auto;
 	display: flex;
 	align-items: start;
+	position: relative;
+	z-index: 1001;
+}
+
+.popover-content {
+	position: absolute;
+	top: 30%;
+	right: 10%;
+	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	margin-top: 8px;
+	z-index: 9999;
+	min-width: 150px;
+}
+
+.modal-overlay {
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: none;
 }
 </style>

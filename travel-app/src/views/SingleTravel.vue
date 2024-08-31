@@ -254,8 +254,8 @@ export default {
 	<div class="container">
 		<div class="row" v-if="travel && showFullMap === false">
 
-			<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`" alt="Travel Picture"
-				class="travel_picture" />
+			<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`"
+				alt="Travel Picture" class="travel_picture" />
 			<img v-else src="https://placehold.co/100" alt="Travel Picture" class="travel_picture" />
 
 			<!-- header -->
@@ -286,8 +286,8 @@ export default {
 					</div>
 
 					<div class="mb-2">
-						<textarea v-model="newStep.description" id="description" placeholder="Aggiungi una breve descrizione"
-							class="form-control"></textarea>
+						<textarea v-model="newStep.description" id="description"
+							placeholder="Aggiungi una breve descrizione" class="form-control"></textarea>
 					</div>
 
 					<div class="input-group mb-2">
@@ -300,8 +300,8 @@ export default {
 					<div class="mb-2 d-flex">
 						<div class="input-group">
 							<span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
-							<DatePicker v-model="newStep.day" id="day" class="form-control rounded-0 date-picker" placeholder="Giorno"
-								required />
+							<DatePicker v-model="newStep.day" id="day" class="form-control rounded-0 date-picker"
+								placeholder="Giorno" required />
 						</div>
 						<div>
 							<input type="time" v-model="newStep.time" id="time" class="form-control" required>
@@ -316,19 +316,20 @@ export default {
 					<div class="mb-2 d-flex">
 						<div class="input-group">
 							<span class="input-group-text"><i class="fa-solid fa-map-pin"></i></span>
-							<input type="text" id="lat" v-model="newStep.lat" class="form-control" placeholder="Latitudine"
-								readonly />
+							<input type="text" id="lat" v-model="newStep.lat" class="form-control"
+								placeholder="Latitudine" readonly />
 						</div>
 						<div class="input-group ms-2">
 							<span class="input-group-text"><i class="fa-solid fa-map-pin"></i></span>
-							<input type="text" id="lng" v-model="newStep.lng" class="form-control" placeholder="Longitudine"
-								readonly />
+							<input type="text" id="lng" v-model="newStep.lng" class="form-control"
+								placeholder="Longitudine" readonly />
 						</div>
 					</div>
 
 					<div class="d-flex gap-2 mb-4 mt-2">
 						<button type="submit" class="btn btn-primary rounded-pill">Aggiungi al viaggio</button>
-						<button type="button" @click="toggleForm" class="btn border rounded-pill fw-medium">Annulla</button>
+						<button type="button" @click="toggleForm"
+							class="btn border rounded-pill fw-medium">Annulla</button>
 					</div>
 				</div>
 			</form>

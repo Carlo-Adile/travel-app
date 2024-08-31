@@ -186,7 +186,7 @@ export default {
 					<p @click="deleteStep">Elimina</p>
 				</div>
 
-				<!-- Form per aggiornare il profilo -->
+				<!-- Form per aggiornare la tappa -->
 				<div v-if="showUpdateStepForm" class="modal-overlay" @click="closeForms">
 					<div class="modal-content" @click.stop>
 						<h3>Aggiorna tappa</h3>

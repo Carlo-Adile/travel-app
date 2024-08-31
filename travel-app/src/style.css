@@ -11,35 +11,27 @@
 
 .accordion-button {
 	background-color: transparent;
-	/* Rimuove il background color del bottone dell'accordion */
 	box-shadow: none;
-	/* Rimuove eventuali ombre */
 	border: none;
-	/* Rimuove il bordo del bottone dell'accordion */
 	outline: none;
 	font-weight: 500;
-	/* Rimuove l'outline predefinito al clic */
 }
 
 .accordion-button:not(.collapsed) {
 	background-color: transparent;
-	/* Rimuove il background color quando l'accordion è espanso */
 }
 
 .accordion-body {
 	background-color: transparent;
 	padding: 5px 8px 5px 8px;
-	/* Rimuove il background color del corpo dell'accordion */
 }
 
 .accordion-item {
 	border: none;
-	/* Rimuove il bordo dell'accordion item, se necessario */
 }
 
 .accordion-header {
 	border-bottom: none;
-	/* Rimuove il bordo inferiore dell'accordion header */
 }
 
 .form-control {
@@ -109,45 +101,20 @@
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 	max-width: 500px;
 	width: 95%;
+	position: relative;
+	z-index: 1001;
 
 	.date-picker {
 		width: 155px;
 	}
 }
 
-/* Assicurati che la mappa non copra gli altri elementi */
 #map {
 	z-index: 1;
 	position: relative;
 }
 
-/* Assicurati che gli altri elementi abbiano un z-index superiore */
 .date-picker {
 	z-index: 2;
 	position: relative;
 }
-
-/* :root {
-	--primary-color: #93cbdc;
-	--secondary-color: #0189bb;
-	--tertiary-color: #d2e7ec;
-} */
-
-/* .main_section {
-	width: 100vw;
-	border-width: 1px 0px 0px 0px;
-	border-style: solid;
-	border-color: white;
-	border-radius: 50px;
-	margin: 0 auto;
-	padding: 1.4rem;
-	gap: 5px;
-	text-align: center;
-
-	background-color: white;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-} */

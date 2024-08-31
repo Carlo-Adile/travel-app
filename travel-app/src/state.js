@@ -203,4 +203,26 @@ export const deleteStep = async () => {
 			console.error('Errore durante l\'eliminazione della tappa:', error.response?.data || error);
 		}
 	}
-}
+};
+
+export const updateTravel = async (travelId, formData) => {
+	try {
+		const response = await axios.put(`${state.base_api_url}/travels/${travelId}`, formData, {
+			headers: {
+				'Authorization': `Bearer ${getters.getToken()}`,
+				'Content-Type': 'multipart/form-data' // Importante per i file e formData
+			}
+		});
+		return response.data;
+	} catch (error) {
+		if (error.response) {
+			console.error('Errore durante la modifica del viaggio:', {
+				status: error.response.status,
+				data: error.response.data
+			});
+		} else {
+			console.error('Errore durante la modifica del viaggio:', error.message);
+		}
+		throw error;
+	}
+};
