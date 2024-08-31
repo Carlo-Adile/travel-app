@@ -145,7 +145,7 @@ export default {
 
 			<div class="travel_card_content">
 				<div class="image-container">
-					<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`"
+					<img v-if="travel.cover_image" :src="`${state.base_api_url}/storage/${travel.cover_image}`"
 						alt="Travel Picture" class="travel_picture" />
 					<img v-else src="https://placehold.co/100" alt="Travel Picture" class="travel_picture" />
 				</div>
