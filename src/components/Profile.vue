@@ -7,6 +7,7 @@ import axios from 'axios';
 export default {
 	data() {
 		return {
+			baseApiUrl: process.env.VUE_APP_BASE_API_URL || 'http://localhost:8000',
 			// Variabili per il login
 			loginEmail: '',
 			loginPassword: '',
@@ -189,7 +190,7 @@ export default {
 				<!-- info profilo -->
 				<div class="d-flex align-items-center mb-2">
 					<!-- Icona profilo -->
-					<img v-if="user.cover_image" :src="`${state.base_api_url}/storage/${user.cover_image}`" alt=""
+					<img v-if="user.cover_image" :src="`${baseApiUrl}/storage/${user.cover_image}`" alt=""
 						class="profile-picture">
 					<img v-else src="https://placehold.co/400" alt="Profile Picture" class="profile-picture" />
 					<h6 class="p-0 m-0">Benvenuto, <br> {{ user.name }}</h6>
