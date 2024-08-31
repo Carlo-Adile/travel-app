@@ -17,6 +17,7 @@ export default {
 	},
 	data() {
 		return {
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
 			loading: true,
 			travel: null,
 			travelId: null,
@@ -78,7 +79,7 @@ export default {
 		async loadTravelData(travelId) {
 			this.travelId = travelId;
 			try {
-				const url = `${state.base_api_url}/travels/${travelId}`;
+				const url = `${this.baseApiUrl}/travels/${travelId}`;
 				const config = {
 					headers: {
 						Authorization: `Bearer ${getters.getToken()}`
@@ -136,7 +137,7 @@ export default {
 				console.log('Data dello step da inviare: ', stepData);
 				/* await this.postStep(stepData); */
 				try {
-					const response = await axios.post(`${state.base_api_url}/travels/${stepData.travel_id}/steps`, stepData, {
+					const response = await axios.post(`${this.baseApiUrl}/travels/${stepData.travel_id}/steps`, stepData, {
 						headers: {
 							'Authorization': `Bearer ${state.auth.token}`,
 							'Content-Type': 'application/json'
@@ -253,9 +254,9 @@ export default {
 <template>
 	<div class="container">
 		<div class="row" v-if="travel && showFullMap === false">
-
-			<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`"
-				alt="Travel Picture" class="travel_picture" />
+			<img v-if="travel.cover_image"
+				:src="`https://api-travel-agenda.carloadile.com/storage/${travel.cover_image}`" alt="Travel Picture"
+				class="travel_picture" />
 			<img v-else src="https://placehold.co/100" alt="Travel Picture" class="travel_picture" />
 
 			<!-- header -->
