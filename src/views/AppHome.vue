@@ -16,6 +16,7 @@ export default {
 	},
 	data() {
 		return {
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
 			travels: [],
 			showForm: false,
 			highlightedTravelId: null,
@@ -95,7 +96,7 @@ export default {
 			// Axios post per inviare il FormData
 			try {
 				const token = state.auth.token;
-				await axios.post(`${state.base_api_url}/travels`, formData, {
+				await axios.post(`${baseApiUrl}/travels`, formData, {
 					headers: {
 						'Authorization': `Bearer ${token}`,
 						'Content-Type': 'multipart/form-data'

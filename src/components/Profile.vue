@@ -7,7 +7,7 @@ import axios from 'axios';
 export default {
 	data() {
 		return {
-			baseApiUrl: process.env.VUE_APP_BASE_API_URL || 'http://localhost:8000',
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
 			// Variabili per il login
 			loginEmail: '',
 			loginPassword: '',

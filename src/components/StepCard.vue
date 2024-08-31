@@ -193,12 +193,12 @@ export default {
 						<form @submit.prevent="updateStep">
 							<div class="input-group mb-2">
 								<span class="input-group-text" id="update-title">#</span>
-								<input type="text" v-model="updatedTitle" placeholder="Titolo" id="update-title" class="form-control"
-									required />
+								<input type="text" v-model="updatedTitle" placeholder="Titolo" id="update-title"
+									class="form-control" required />
 							</div>
 							<div class="mb-2">
-								<textarea v-model="updatedDescription" id="update-description" placeholder="Modifica la descrizione"
-									class="form-control" required />
+								<textarea v-model="updatedDescription" id="update-description"
+									placeholder="Modifica la descrizione" class="form-control" required />
 							</div>
 							<div class="input-group mb-2">
 								<span class="input-group-text">Categoria</span>
@@ -220,7 +220,8 @@ export default {
 							</div>
 							<div class="d-flex gap-2 mb-3">
 								<button type="submit" class="btn btn-primary rounded-pill fw-medium">Conferma</button>
-								<button type="button" @click="closeForms" class="btn border rounded-pill fw-medium">Annulla</button>
+								<button type="button" @click="closeForms"
+									class="btn border rounded-pill fw-medium">Annulla</button>
 							</div>
 						</form>
 					</div>

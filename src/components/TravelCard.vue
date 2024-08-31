@@ -10,7 +10,7 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: process.env.VUE_APP_BASE_API_URL || 'http://localhost:8000',
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
 			/* aggiorna viaggio */
 			updatedTravelTitle: this.travel.title,
 			updatedTravelStartDate: new Date(this.travel.start_date),
