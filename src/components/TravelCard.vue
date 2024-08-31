@@ -69,7 +69,7 @@ export default {
 
 				console.log('Dati inviati:', Array.from(formData.entries()));
 
-				const response = await axios.post(`${base_api_url}/travels/${this.travel.id}`, formData, {
+				const response = await axios.post(`${this.baseApiUrl}/travels/${this.travel.id}`, formData, {
 					headers: {
 						'Authorization': `Bearer ${getters.getToken()}`,
 						'Content-Type': 'application/x-www-form-urlencoded'
@@ -100,7 +100,7 @@ export default {
 				if (!confirmDelete) return;
 
 				// Esegui la richiesta di eliminazione
-				await axios.delete(`${baseApiUrl}/travels/${this.travel.id}`, {
+				await axios.delete(`${this.baseApiUrl}/travels/${this.travel.id}`, {
 					headers: {
 						'Authorization': `Bearer ${getters.getToken()}`,
 						'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ export default {
 
 			<div class="travel_card_content">
 				<div class="image-container">
-					<img v-if="travel.cover_image" :src="`${base_api_url}/storage/${travel.cover_image}`"
+					<img v-if="travel.cover_image" :src="`${baseApiUrl}/storage/${travel.cover_image}`"
 						alt="Travel Picture" class="travel_picture" />
 					<img v-else src="https://placehold.co/100" alt="Travel Picture" class="travel_picture" />
 				</div>

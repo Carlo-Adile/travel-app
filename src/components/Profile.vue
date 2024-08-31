@@ -85,7 +85,7 @@ export default {
 					formData.append('cover_image', this.coverImage);
 				}
 
-				const response = await axios.post(`${base_api_url}/register`, formData, {
+				const response = await axios.post(`${this.baseApiUrl}/register`, formData, {
 					headers: {
 						'Content-Type': 'multipart/form-data',
 					},
