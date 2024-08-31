@@ -190,7 +190,8 @@ export default {
 				<!-- info profilo -->
 				<div class="d-flex align-items-center mb-2">
 					<!-- Icona profilo -->
-					<img v-if="user.cover_image" :src="`${baseApiUrl}/storage/${user.cover_image}`" alt=""
+					<img v-if="user.cover_image"
+						:src="`https://api-travel-agenda.carloadile.com/storage/${user.cover_image}`" alt=""
 						class="profile-picture">
 					<img v-else src="https://placehold.co/400" alt="Profile Picture" class="profile-picture" />
 					<h6 class="p-0 m-0">Benvenuto, <br> {{ user.name }}</h6>
