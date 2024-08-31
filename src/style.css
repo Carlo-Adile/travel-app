@@ -1,0 +1,120 @@
+:root {
+	--primary-color: #caabd5;
+	--secondary-color: #6bc4ca;
+	--tertiary-color: #83749f;
+}
+
+.no_style {
+	text-decoration: none;
+	color: inherit;
+}
+
+.accordion-button {
+	background-color: transparent;
+	box-shadow: none;
+	border: none;
+	outline: none;
+	font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+	background-color: transparent;
+}
+
+.accordion-body {
+	background-color: transparent;
+	padding: 5px 8px 5px 8px;
+}
+
+.accordion-item {
+	border: none;
+}
+
+.accordion-header {
+	border-bottom: none;
+}
+
+.form-control {
+	background-color: transparent;
+}
+
+/* popover utilities */
+.popover-container {
+	position: relative;
+	display: inline-block;
+}
+
+.popover-button {
+	padding: 8px;
+	background-color: transparent;
+	color: #333;
+	border: none;
+	cursor: pointer;
+}
+
+.popover-content {
+	position: absolute;
+	top: 70%;
+	right: 10%;
+	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	margin-top: 8px;
+	z-index: 1000;
+	min-width: 150px;
+}
+
+.popover-content::before {
+	content: "";
+	position: absolute;
+	top: -5px;
+	right: 50%;
+	transform: translateX(50%);
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent transparent white transparent;
+}
+
+/* modal utilities */
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	/* Sfondo scuro */
+	backdrop-filter: blur(5px);
+	/* Sfocatura dello sfondo */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	max-width: 500px;
+	width: 95%;
+	position: relative;
+	z-index: 1001;
+
+	.date-picker {
+		width: 155px;
+	}
+}
+
+#map {
+	z-index: 1;
+	position: relative;
+}
+
+.date-picker {
+	z-index: 2;
+	position: relative;
+}
