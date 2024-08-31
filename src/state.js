@@ -4,7 +4,8 @@ import { reactive } from 'vue';
 // Usa reactive per creare uno stato reattivo
 export const state = reactive({
 	/* profile */
-	base_api_url: 'http://localhost:8000/api',
+	/* base_api_url: 'http://localhost:8000/api', */
+	base_api_url: import.meta.env.VITE_API_BASE_URL || 'https://localhost:8000/api',
 	auth: {
 		isLoggedIn: false,
 		user: null,

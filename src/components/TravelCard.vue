@@ -69,7 +69,7 @@ export default {
 
 				console.log('Dati inviati:', Array.from(formData.entries()));
 
-				const response = await axios.post(`${this.base_api_url}/travels/${this.travel.id}`, formData, {
+				const response = await axios.post(`${state.base_api_url}/travels/${this.travel.id}`, formData, {
 					headers: {
 						'Authorization': `Bearer ${getters.getToken()}`,
 						'Content-Type': 'application/x-www-form-urlencoded'
@@ -100,7 +100,7 @@ export default {
 				if (!confirmDelete) return;
 
 				// Esegui la richiesta di eliminazione
-				await axios.delete(`${this.base_api_url}/travels/${this.travel.id}`, {
+				await axios.delete(`${state.base_api_url}/travels/${this.travel.id}`, {
 					headers: {
 						'Authorization': `Bearer ${getters.getToken()}`,
 						'Content-Type': 'application/json'
@@ -145,8 +145,8 @@ export default {
 
 			<div class="travel_card_content">
 				<div class="image-container">
-					<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`" alt="Travel Picture"
-						class="travel_picture" />
+					<img v-if="travel.cover_image" :src="`${'http://localhost:8000'}/${travel.cover_image}`"
+						alt="Travel Picture" class="travel_picture" />
 					<img v-else src="https://placehold.co/100" alt="Travel Picture" class="travel_picture" />
 				</div>
 				<!-- informazioni viaggio -->
@@ -179,13 +179,14 @@ export default {
 				<form @submit.prevent="updateTravel">
 					<div class="input-group mb-2">
 						<span class="input-group-text" id="update-title">#</span>
-						<input type="text" v-model="updatedTravelTitle" placeholder="Titolo" id="update-title" class="form-control"
-							required />
+						<input type="text" v-model="updatedTravelTitle" placeholder="Titolo" id="update-title"
+							class="form-control" required />
 					</div>
 					<div class="d-flex flex-wrap gap-2 mb-2">
 						<div>
 							<label for="start_date" class="form-label">Data di inizio</label>
-							<DatePicker v-model="updatedTravelStartDate" id="start_date" class="form-control" required />
+							<DatePicker v-model="updatedTravelStartDate" id="start_date" class="form-control"
+								required />
 						</div>
 						<div>
 							<label for="end_date" class="form-label">Data di fine</label>
@@ -198,7 +199,8 @@ export default {
 					</div>
 					<div class="d-flex gap-2 mb-3">
 						<button type="submit" class="btn btn-primary rounded-pill fw-medium">Conferma</button>
-						<button type="button" @click="closeForms" class="btn border rounded-pill fw-medium">Annulla</button>
+						<button type="button" @click="closeForms"
+							class="btn border rounded-pill fw-medium">Annulla</button>
 					</div>
 				</form>
 			</div>
