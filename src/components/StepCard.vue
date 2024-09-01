@@ -189,18 +189,21 @@ export default {
 				<!-- Form per aggiornare la tappa -->
 				<div v-if="showUpdateStepForm" class="modal-overlay" @click="closeForms">
 					<div class="modal-content" @click.stop>
-						<h3>Aggiorna tappa</h3>
+						<h2>Aggiorna tappa</h2>
+						<hr>
+						<!-- campi del form -->
 						<form @submit.prevent="updateStep">
-							<div class="input-group mb-2">
-								<span class="input-group-text" id="update-title">#</span>
+							<div class="mb-2">
+								<label for="update-title">Titolo</label>
 								<input type="text" v-model="updatedTitle" placeholder="Titolo" id="update-title"
 									class="form-control" required />
 							</div>
 							<div class="mb-2">
+								<label for="update-description">Descrizione</label>
 								<textarea v-model="updatedDescription" id="update-description"
-									placeholder="Modifica la descrizione" class="form-control" required />
+									placeholder="Massimo 255 caratteri" class="form-control" required />
 							</div>
-							<div class="input-group mb-2">
+							<div class="input-group my-2">
 								<span class="input-group-text">Categoria</span>
 								<select v-model="updatedTag" id="category" class="form-select">
 									<option v-for="tag in tags" :key="tag" :value="tag.name">
@@ -208,7 +211,7 @@ export default {
 									</option>
 								</select>
 							</div>
-							<div class="mb-2 d-flex">
+							<div class="my-2 d-flex">
 								<div class="input-group">
 									<span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
 									<DatePicker v-model="updatedDay" id="day" class="form-control rounded-0 date-picker"
@@ -218,10 +221,11 @@ export default {
 									<input type="time" v-model="updatedTime" id="time" class="form-control" required />
 								</div>
 							</div>
-							<div class="d-flex gap-2 mb-3">
-								<button type="submit" class="btn btn-primary rounded-pill fw-medium">Conferma</button>
+							<hr>
+							<div class="d-flex justify-content-center gap-2 mt-1">
+								<button type="submit" class="btn rounded-pill form_btn_confirm">Conferma</button>
 								<button type="button" @click="closeForms"
-									class="btn border rounded-pill fw-medium">Annulla</button>
+									class="btn border rounded-pill form_btn_cancel">Annulla</button>
 							</div>
 						</form>
 					</div>

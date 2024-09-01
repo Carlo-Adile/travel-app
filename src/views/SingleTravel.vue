@@ -17,8 +17,8 @@ export default {
 	},
 	data() {
 		return {
-			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
-			baseApiUrl: 'http://127.0.0.1:8000/api',
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
 			loading: true,
 			travel: null,
 			travelId: null,
@@ -39,8 +39,8 @@ export default {
 				lng: null
 			},
 			tags: [
-				{ name: 'Ristoranti', iconClass: 'fa-solid fa-utensils' },
-				{ name: 'Hotel', iconClass: 'fa-solid fa-bed' },
+				{ name: 'Ristorazione e Cibo', iconClass: 'fa-solid fa-utensils' },
+				{ name: 'Alloggi', iconClass: 'fa-solid fa-bed' },
 				{ name: 'Shopping', iconClass: 'fa-solid fa-bag-shopping' },
 				{ name: 'Eventi', iconClass: 'fa-solid fa-ticket' },
 				{ name: 'Città ed Attrazioni', iconClass: 'fa-solid fa-city' },
@@ -65,15 +65,6 @@ export default {
 	mounted() {
 		const travelId = this.$route.params.id;
 		this.loadTravelData(travelId);
-	},
-	watch: {
-		showFormMap(newVal) {
-			if (newVal) {
-				this.$nextTick(() => {
-					this.initializeMap();
-				});
-			}
-		}
 	},
 	methods: {
 		/* metodi per l'ottenimento */
@@ -136,7 +127,7 @@ export default {
 					lng: this.newStep.lng
 				};
 				console.log('Data dello step da inviare: ', stepData);
-				/* await this.postStep(stepData); */
+
 				try {
 					const response = await axios.post(`${this.baseApiUrl}/travels/${stepData.travel_id}/steps`, stepData, {
 						headers: {
@@ -187,9 +178,25 @@ export default {
 			})
 		},
 		/* form */
-		toggleForm() {
-			this.showFormMap = !this.showFormMap;
-			this.showForm = !this.showForm;
+		async toggleForm() {
+			try {
+				await this.getUserLocation();
+			} catch (error) {
+				console.error('Errore durante l\'ottenimento della posizione dell\'utente:', error);
+			} finally {
+				this.showFormMap = !this.showFormMap;
+				this.showForm = !this.showForm;
+			}
+		},
+		async toggleFullMap() {
+			if (!this.showFullMap) {
+				await this.getUserLocation();
+				console.log("Valid steps prima di aprire la mappa:", this.validSteps); // Log dei validSteps
+				// Attendi che la posizione venga ottenuta
+				this.showFullMap = true; // Mostra la mappa solo dopo aver ottenuto la posizione
+			} else {
+				this.showFullMap = false;
+			}
 		},
 		/* mappa e user location */
 		async getUserLocation() {
@@ -216,39 +223,19 @@ export default {
 				}
 			});
 		},
-		initializeMap() {
-			const mapElement = document.getElementById('map');
-			if (!mapElement) {
-				console.error('Map container not found');
-				return;
-			}
-
-			const map = L.map(mapElement).setView([51.505, -0.09], 13);
-
-			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				maxZoom: 19
-			}).addTo(map);
-
-			map.on('click', (e) => {
-				const { lat, lng } = e.latlng;
-				this.newStep.lat = lat.toFixed(6);
-				this.newStep.lng = lng.toFixed(6);
-
-				L.marker([lat, lng]).addTo(map)
-					.bindPopup(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`)
-					.openPopup();
-			});
+		/* comunicazioni con Map */
+		handleMapClick({ lat, lng }) {
+			this.newStep.lat = lat;
+			this.newStep.lng = lng;
 		},
-		async toggleFullMap() {
-			if (!this.showFullMap) {
-				await this.getUserLocation();
-				console.log("Valid steps prima di aprire la mappa:", this.validSteps); // Log dei validSteps
-				// Attendi che la posizione venga ottenuta
-				this.showFullMap = true; // Mostra la mappa solo dopo aver ottenuto la posizione
-			} else {
-				this.showFullMap = false;
-			}
-		},
+		handleChosenPoint(point) {
+			this.newStep.lat = point.lat;
+			this.newStep.lng = point.lng;
+			this.newStep.title = point.title || 'Nuova tappa';
+			this.showFormMap = true;
+			this.showForm = true;
+			this.showFullMap = false;
+		}
 	}
 }
 </script>
@@ -278,28 +265,27 @@ export default {
 			</div>
 
 			<!-- form per l'aggiunta di una tappa -->
-			<form v-if="showForm" @submit.prevent="addNewStep" class="text-center modal-overlay">
+			<form v-if="showForm" @submit.prevent="addNewStep" class="modal-overlay">
 				<div class="modal-content" @click.stop>
-					<h3>Crea una nuova tappa</h3>
-
+					<h2>Aggiungi una tappa</h2>
+					<hr>
 					<!-- Campi del modulo -->
-					<div class="input-group mb-2">
-						<span class="input-group-text"><i class="fa-solid fa-heading"></i></span>
-						<input type="text" v-model="newStep.title" id="title" class="form-control" placeholder="Titolo">
-					</div>
-
 					<div class="mb-2">
-						<textarea v-model="newStep.description" id="description"
-							placeholder="Aggiungi una breve descrizione" class="form-control"></textarea>
+						<label for="title" class="form-label">Titolo</label>
+						<input type="text" v-model="newStep.title" id="title" class="form-control"
+							placeholder="Massimo 55 caratteri">
 					</div>
-
+					<div class="mb-2">
+						<label for="description">Descrizione</label>
+						<textarea v-model="newStep.description" id="description" placeholder="Massimo 255 caratteri"
+							class="form-control"></textarea>
+					</div>
 					<div class="input-group mb-2">
 						<span class="input-group-text">Categoria</span>
 						<select v-model="newStep.tag" id="category" class="form-select">
 							<option v-for="tag in tags" :key="tag.name" :value="tag.name">{{ tag.name }}</option>
 						</select>
 					</div>
-
 					<div class="mb-2 d-flex">
 						<div class="input-group">
 							<span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
@@ -312,27 +298,23 @@ export default {
 					</div>
 
 					<!-- Sezione della mappa -->
-					<div v-if="showFormMap" style="position: relative;">
-						<div id="map" style="height: 300px; width: 100%; margin-bottom: 1rem;"></div>
-					</div>
-
-					<div class="mb-2 d-flex">
-						<div class="input-group">
-							<span class="input-group-text"><i class="fa-solid fa-map-pin"></i></span>
-							<input type="text" id="lat" v-model="newStep.lat" class="form-control"
-								placeholder="Latitudine" readonly />
-						</div>
-						<div class="input-group ms-2">
-							<span class="input-group-text"><i class="fa-solid fa-map-pin"></i></span>
-							<input type="text" id="lng" v-model="newStep.lng" class="form-control"
-								placeholder="Longitudine" readonly />
+					<div v-if="showFormMap" class="mb-1">
+						<div id="formMap">
+							<Map :travelSteps="validSteps" :currentLocation="currentLocation" :isFormMap="true"
+								@map-click="handleMapClick" :showMenu="false" />
 						</div>
 					</div>
-
-					<div class="d-flex gap-2 mb-4 mt-2">
-						<button type="submit" class="btn btn-primary rounded-pill">Aggiungi al viaggio</button>
+					<div class="d-none">
+						<input type="text" id="lat" v-model="newStep.lat" class="form-control" placeholder="Latitudine"
+							readonly />
+						<input type="text" id="lng" v-model="newStep.lng" class="form-control" placeholder="Longitudine"
+							readonly />
+					</div>
+					<hr>
+					<div class="d-flex justify-content-center gap-2 mt-1">
+						<button type="submit" class="btn rounded-pill form_btn_confirm">Aggiungi al viaggio</button>
 						<button type="button" @click="toggleForm"
-							class="btn border rounded-pill fw-medium">Annulla</button>
+							class="btn border rounded-pill form_btn_cancel">Annulla</button>
 					</div>
 				</div>
 			</form>
@@ -362,16 +344,33 @@ export default {
 			</div>
 
 		</div>
+	</div>
 
-		<!-- Mostra la mappa se l'utente seleziona la mappa -->
-		<div v-if="showFullMap">
-			<Map ref="mapComponent" :travelSteps="validSteps" :currentLocation="currentLocation" :showRouting="false" />
+	<!-- Mostra la mappa se l'utente seleziona la mappa -->
+	<div v-if="showFullMap" style="p-0">
+
+		<div id="fullMap">
+			<Map ref="mapComponent" :travelSteps="validSteps" :currentLocation="currentLocation" :showRouting="false"
+				@close-map="this.showFullMap = false" @add-point="handleChosenPoint" />
 		</div>
 
 	</div>
+
 </template>
 
 <style scoped>
+#formMap {
+	height: 300px;
+	width: 100%;
+	z-index: 1;
+	position: relative;
+}
+
+#fullMap {
+	height: 100vh;
+	width: 100%;
+}
+
 .travel_picture {
 	width: 100vw;
 	padding: 0;
@@ -393,77 +392,5 @@ export default {
 .days-container::-webkit-scrollbar-thumb {
 	background-color: #ccc;
 	border-radius: 4px;
-}
-
-.timeline {
-	position: relative;
-	max-width: 600px;
-	margin: 0 auto;
-	padding: 0px 0;
-}
-
-.timeline ul {
-	list-style: none;
-	padding: 12px 0;
-	margin: 0;
-}
-
-.timeline li {
-	position: relative;
-	padding: 10px 0;
-	display: flex;
-	align-items: flex-start;
-}
-
-.timeline li .line {
-	position: absolute;
-	left: calc(20% + 4px);
-	top: 30px;
-	width: 2px;
-	height: 100%;
-	background-color: #3498db;
-	z-index: 0;
-}
-
-.timeline .day_limiter {
-	margin: 2px 10px;
-	border-bottom: 1px solid grey;
-	border-radius: 5px;
-	padding-left: 15px;
-}
-
-.timeline .time {
-	width: 60px;
-	text-align: right;
-	margin-right: 15px;
-	margin-top: -10px;
-	color: #3498db;
-	font-weight: bold;
-}
-
-.timeline .circle {
-	width: 30px;
-	height: 30px;
-	background-color: #3498db;
-	border-radius: 50%;
-	position: absolute;
-	left: calc(20% - 10px);
-	top: 0;
-	transform: translateY(10px);
-	z-index: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	i {
-		color: white;
-	}
-
-}
-
-.timeline .content {
-	margin-top: -15px;
-	margin-left: 35px;
-	width: 70%;
 }
 </style>

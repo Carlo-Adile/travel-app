@@ -6,6 +6,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: []  // Solo se necessario, altrimenti lascialo vuoto
-    }
+    },
+    resolve: {
+      alias: {
+        '@': '/src',
+      },
+    },
   }
 });

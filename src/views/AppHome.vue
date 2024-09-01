@@ -16,8 +16,8 @@ export default {
 	},
 	data() {
 		return {
-			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
-			baseApiUrl: 'http://127.0.0.1:8000/api',
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
 			travels: [],
 			showForm: false,
 			highlightedTravelId: null,
@@ -147,12 +147,14 @@ export default {
 			<!-- form per aggiungere un viaggio -->
 			<form v-if="showForm" @submit.prevent="addNewTravel" class="modal-overlay">
 				<div class="modal-content">
+					<h2>Aggiungi un viaggio</h2>
+					<hr>
+
 					<div class="mb-2">
 						<label for="title" class="form-label">Titolo</label>
-						<input type="text" v-model="newTravel.title" id="title" placeholder="Titolo"
+						<input type="text" v-model="newTravel.title" id="title" placeholder="Massimo 55 caratteri"
 							class="form-control" required>
 					</div>
-
 					<div class="d-flex flex-wrap gap-2 mb-2">
 						<div>
 							<label for="start_date" class="form-label">Data di inizio</label>
@@ -168,10 +170,11 @@ export default {
 						<label for="cover_image" class="form-label">Immagine di copertina</label>
 						<input type="file" @change="handleImageUpload" id="cover_image" class="form-control">
 					</div>
-
-					<div class="d-flex gap-2 mb-2 mt-3">
-						<button type="submit" class="btn btn-primary rounded-pill">Crea Viaggio</button>
-						<button type="button" class="btn border rounded-pill" @click="toggleForm">Annulla</button>
+					<hr>
+					<div class="d-flex justify-content-center gap-2 mt-1">
+						<button type="submit" class="btn rounded-pill form_btn_confirm">Conferma</button>
+						<button type="button" class="btn border rounded-pill form_btn_cancel"
+							@click="toggleForm">Annulla</button>
 					</div>
 				</div>
 			</form>

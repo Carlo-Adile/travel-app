@@ -10,8 +10,8 @@ export default {
 	},
 	data() {
 		return {
-			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
-			baseApiUrl: 'http://127.0.0.1:8000/api',
+			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
 			/* aggiorna viaggio */
 			updatedTravelTitle: this.travel.title,
 			updatedTravelStartDate: new Date(this.travel.start_date),
@@ -177,12 +177,13 @@ export default {
 		<!-- Form per aggiornare il viaggio -->
 		<div v-show="showUpdateTravelForm" class="modal-overlay" @click="closeForms">
 			<div @click.stop class="modal-content">
-				<h3>Aggiorna viaggio</h3>
+				<h2>Aggiorna viaggio</h2>
+				<hr>
 				<form @submit.prevent="updateTravel">
-					<div class="input-group mb-2">
-						<span class="input-group-text" id="update-title">#</span>
-						<input type="text" v-model="updatedTravelTitle" placeholder="Titolo" id="update-title"
-							class="form-control" required />
+					<div class="mb-2">
+						<label for="update-title" class="form-label">Titolo</label>
+						<input type="text" v-model="updatedTravelTitle" placeholder="Massimo 55 caratteri"
+							id="update-title" class="form-control" required />
 					</div>
 					<div class="d-flex flex-wrap gap-2 mb-2">
 						<div>
@@ -199,10 +200,11 @@ export default {
 						<label for="cover_image" class="form-label">Immagine di copertina</label>
 						<input type="file" @change="handleImageUpload" id="cover_image" class="form-control">
 					</div>
-					<div class="d-flex gap-2 mb-3">
-						<button type="submit" class="btn btn-primary rounded-pill fw-medium">Conferma</button>
+					<hr>
+					<div class="d-flex justify-content-center gap-2 mt-1">
+						<button type="submit" class="btn rounded-pill form_btn_confirm">Conferma</button>
 						<button type="button" @click="closeForms"
-							class="btn border rounded-pill fw-medium">Annulla</button>
+							class="btn border rounded-pill form_btn_cancel">Annulla</button>
 					</div>
 				</form>
 			</div>
@@ -282,7 +284,7 @@ export default {
 }
 
 .modal-overlay {
-	background: rgba(0, 0, 0, 0.5);
+	background: transparent;
 	backdrop-filter: none;
 }
 </style>
