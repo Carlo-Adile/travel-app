@@ -359,6 +359,10 @@ export default {
 </template>
 
 <style scoped>
+.modal-content {
+	overflow-y: auto;
+}
+
 #formMap {
 	height: 300px;
 	width: 100%;
