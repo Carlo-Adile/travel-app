@@ -17,7 +17,8 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
+			baseApiUrl: 'http://127.0.0.1:8000/api',
 			loading: true,
 			travel: null,
 			travelId: null,
@@ -154,6 +155,43 @@ export default {
 				console.error('Errore durante la creazione della tappa:', error.response?.data || error);
 			}
 		},
+		/* template e animazioni */
+		formatTime(time) {
+			if (!time) return '';
+			const [hours, minutes] = time.split(':');
+			return `${hours}:${minutes}`;
+		},
+		formattedDay(day) {
+			const options = { day: 'numeric', month: 'long' };
+			const dayString = new Date(day);
+			const formattedDay = dayString.toLocaleDateString('it-IT', options);
+			return formattedDay;
+		},
+		getFormattedDateRange() {
+			return formattedDateRange(this.travel.start_date, this.travel.end_date);
+		},
+		getTagIcon(tagName) {
+			const tag = this.tags.find(t => t.name === tagName);
+			return tag ? tag.iconClass : 'fa-solid fa-question';
+		},
+		beforeEnter(el) {
+			el.style.opacity = 0;
+			el.style.transform = 'translateX(60px)';
+		},
+		enter(el) {
+			gsap.to(el, {
+				opacity: 1,
+				x: 0,
+				duration: 1,
+				delay: el.dataset.index * 0.2
+			})
+		},
+		/* form */
+		toggleForm() {
+			this.showFormMap = !this.showFormMap;
+			this.showForm = !this.showForm;
+		},
+		/* mappa e user location */
 		async getUserLocation() {
 			return new Promise((resolve, reject) => {
 				if (navigator.geolocation) {
@@ -210,42 +248,6 @@ export default {
 			} else {
 				this.showFullMap = false;
 			}
-		},
-		/* template e animazioni */
-		formatTime(time) {
-			if (!time) return '';
-			const [hours, minutes] = time.split(':');
-			return `${hours}:${minutes}`;
-		},
-		formattedDay(day) {
-			const options = { day: 'numeric', month: 'long' };
-			const dayString = new Date(day);
-			const formattedDay = dayString.toLocaleDateString('it-IT', options);
-			return formattedDay;
-		},
-		getFormattedDateRange() {
-			return formattedDateRange(this.travel.start_date, this.travel.end_date);
-		},
-		getTagIcon(tagName) {
-			const tag = this.tags.find(t => t.name === tagName);
-			return tag ? tag.iconClass : 'fa-solid fa-question';
-		},
-		beforeEnter(el) {
-			el.style.opacity = 0;
-			el.style.transform = 'translateX(60px)';
-		},
-		enter(el) {
-			gsap.to(el, {
-				opacity: 1,
-				x: 0,
-				duration: 1,
-				delay: el.dataset.index * 0.2
-			})
-		},
-		/* form */
-		toggleForm() {
-			this.showFormMap = !this.showFormMap;
-			this.showForm = !this.showForm;
 		},
 	}
 }
@@ -311,7 +313,7 @@ export default {
 
 					<!-- Sezione della mappa -->
 					<div v-if="showFormMap" style="position: relative;">
-						<div id="map" style="height: 400px; width: 100%; margin-bottom: 1rem;"></div>
+						<div id="map" style="height: 300px; width: 100%; margin-bottom: 1rem;"></div>
 					</div>
 
 					<div class="mb-2 d-flex">

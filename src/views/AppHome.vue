@@ -16,7 +16,8 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
+			baseApiUrl: 'http://127.0.0.1:8000/api',
 			travels: [],
 			showForm: false,
 			highlightedTravelId: null,
