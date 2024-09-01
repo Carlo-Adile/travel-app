@@ -313,7 +313,7 @@ export default {
 					<hr>
 					<div class="d-flex justify-content-center gap-2 mt-1">
 						<button type="submit" class="btn rounded-pill form_btn_confirm">Aggiungi al viaggio</button>
-						<button type="button" @click="toggleForm"
+						<button type="button" @click="this.showForm = false"
 							class="btn border rounded-pill form_btn_cancel">Annulla</button>
 					</div>
 				</div>
@@ -359,13 +359,9 @@ export default {
 </template>
 
 <style scoped>
-.modal-content {
-	overflow-y: auto;
-}
-
 #formMap {
-	height: 300px;
-	width: 100%;
+	height: 250px;
+	width: 250px;
 	z-index: 1;
 	position: relative;
 }
