@@ -7,8 +7,9 @@ import axios from 'axios';
 export default {
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
 			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
+			baseApiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
 			// Variabili per il login
 			loginEmail: '',
 			loginPassword: '',
@@ -113,7 +114,8 @@ export default {
 		// Metodo per il logout
 		async logout() {
 			try {
-				const response = await logout(); // Chiamata diretta alla funzione logout
+				this.isPopoverVisible = false;
+				const response = await logout();
 				console.log('Logout successful:', response);
 			} catch (error) {
 				console.error('Logout failed:', error);
@@ -237,8 +239,8 @@ export default {
 		<!-- utente non loggato -->
 		<div v-if="isLoggedIn === false" id="my_login_hero">
 
-			<div id="hero_image" class="mb-3">
-				<img src="/src/assets/login_hero.png" alt="" class="img-fluid">
+			<div class="mb-3">
+				<img id="hero_image" src="/src/assets/login_hero.png" alt="" class="img-fluid">
 			</div>
 
 			<div class="px-3">
@@ -329,6 +331,7 @@ export default {
 <style scoped>
 #my_login_hero {
 	height: 90vh;
+	width: 100vw;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -344,12 +347,11 @@ export default {
 	}
 }
 
-#heroimage {
+#hero_image {
 	position: relative;
 	margin: 0;
 	padding: 0;
 	width: 100vw;
-	height: 60vh;
 	overflow: hidden;
 }
 

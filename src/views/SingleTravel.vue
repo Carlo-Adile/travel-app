@@ -17,8 +17,9 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
 			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
+			baseApiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
 			loading: true,
 			travel: null,
 			travelId: null,
@@ -361,7 +362,7 @@ export default {
 <style scoped>
 #formMap {
 	height: 250px;
-	width: 250px;
+	width: 100%;
 	z-index: 1;
 	position: relative;
 }

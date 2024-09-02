@@ -5,8 +5,8 @@ import { reactive } from 'vue';
 export const state = reactive({
 	/* profile */
 	/* base_api_url: 'http://localhost:8000/api', */
-	/* base_api_url: import.meta.env.VITE_API_BASE_URL || 'https://localhost:8000/api', */
-	base_api_url: 'https://api-travel-agenda.carloadile.com/api',
+	base_api_url: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+	/* base_api_url: 'https://api-travel-agenda.carloadile.com/api', */
 	auth: {
 		isLoggedIn: false,
 		user: null,
@@ -79,6 +79,7 @@ export const register = async (userData) => {
 		Object.keys(userData).forEach(key => {
 			formData.append(key, userData[key]);
 		});
+		localStorage.setItem('auth', JSON.stringify({ user, token }));
 
 		const response = await axios.post(`${state.base_api_url}/register`, formData, {
 			headers: {
@@ -151,6 +152,9 @@ export const getTravel = async () => {
 		return response.data;
 	} catch (error) {
 		console.error('Non è stato possibile recuperare i tuoi viaggi', error);
+		if (error.response && error.response.status === 401) {
+			await logout();
+		};
 		throw error;
 	}
 };

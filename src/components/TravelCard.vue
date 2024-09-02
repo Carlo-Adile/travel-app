@@ -10,8 +10,9 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
 			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
+			baseApiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
 			/* aggiorna viaggio */
 			updatedTravelTitle: this.travel.title,
 			updatedTravelStartDate: new Date(this.travel.start_date),

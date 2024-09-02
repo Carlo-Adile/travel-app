@@ -6,7 +6,6 @@ import DatePicker from 'vue3-datepicker';
 import Profile from '../components/Profile.vue';
 import gsap from 'gsap';
 
-
 export default {
 	name: 'AppHome',
 	components: {
@@ -16,8 +15,9 @@ export default {
 	},
 	data() {
 		return {
-			baseApiUrl: 'https://api-travel-agenda.carloadile.com/api',
+			/* baseApiUrl: 'https://api-travel-agenda.carloadile.com/api', */
 			/* baseApiUrl: 'http://127.0.0.1:8000/api', */
+			baseApiUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
 			travels: [],
 			showForm: false,
 			highlightedTravelId: null,
