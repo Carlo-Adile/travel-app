@@ -124,30 +124,38 @@ export default {
 		// Metodo per aggiornare il profilo
 		async updateProfile() {
 			try {
-				// Prepara i dati da inviare per l'aggiornamento del profilo
-				const profileData = {
-					name: this.updatedName,
-					email: this.updatedEmail,
-				};
+				// Creiamo un oggetto FormData per inviare i dati del profilo e l'immagine
+				const formData = new FormData();
+				formData.append('name', this.updatedName);
+				formData.append('email', this.updatedEmail);
+				formData.append('_method', 'PUT');
+
+				// Se è stata selezionata un'immagine, aggiungila ai dati del profilo
+				if (this.coverImage) {
+					formData.append('cover_image', this.coverImage);
+				}
 
 				// Richiama la funzione updateProfile di state.js
-				const response = await updateProfile(profileData);
+				const response = await axios.post(`${state.base_api_url}/profile`, formData, {
+					headers: {
+						'Authorization': `Bearer ${getters.getToken()}`,
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+				});
 
 				// Verifica lo stato dell'utente
 				if (!this.isLoggedIn) {
 					console.error('User appears to be logged out after update.');
 				}
 
-				this.user.name = this.updatedName;
+				// Aggiorna i dati del profilo
 				this.refreshData();
-				// Gestisci la risposta, se necessario
+
 				console.log('Profile updated successfully:', response);
 
-				// Potresti voler chiudere il form dopo l'aggiornamento
+				this.isPopoverVisible = false;
 				this.closeForms();
-
 			} catch (error) {
-				// Gestisci l'errore, se necessario
 				console.error('Profile update failed:', error);
 			}
 		},
@@ -217,6 +225,7 @@ export default {
 			<div v-if="showUpdateProfileForm">
 				<h3>Aggiorna profilo</h3>
 				<form @submit.prevent="updateProfile">
+					<!-- campi vari -->
 					<div class="input-group mb-2">
 						<span class="input-group-text" id="update-name">#</span>
 						<input type="text" v-model="updatedName" placeholder="Nome utente" id="update-name"
@@ -227,6 +236,11 @@ export default {
 						<input type="email" v-model="updatedEmail" id="update-email" placeholder="Email"
 							class="form-control" />
 					</div>
+					<div class="input mb-2">
+						<input type="file" @change="handleFileUpload" id="update-cover-image" class="form-control"
+							aria-label="Cover Image" />
+					</div>
+					<!-- pulsanti -->
 					<div class="d-flex gap-2 mb-3">
 						<button type="submit" class="btn btn-primary rounded-pill fw-medium">Aggiorna</button>
 						<button type="button" @click="closeForms"
@@ -253,7 +267,7 @@ export default {
 					organizza ogni dettaglio con pochi clic.
 				</p>
 			</div>
-			<!-- pulsanti vari -->
+			<!-- Form di login -->
 			<div class="px-3">
 				<button v-if="showForm === false && showRegisterForm === false" @click="toggleForm()"
 					class="btn btn-primary rounded-pill fw-medium w-100">inizia adesso</button>
@@ -261,19 +275,19 @@ export default {
 					<div v-if="showForm">
 						<h3>Login</h3>
 						<form @submit.prevent="login">
+							<!-- campi vari -->
 							<div class="input-group mb-2">
 								<span class="input-group-text" id="login-email">@</span>
 								<input type="email" v-model="loginEmail" id="login-email" class="form-control"
 									placeholder="Email" aria-label="Email" aria-describedby="basic-addon1" />
 							</div>
-
 							<div class="input-group mb-2">
 								<span class="input-group-text" id="login-password"><i
 										class="fa-solid fa-lock"></i></span>
 								<input type="password" v-model="loginPassword" id="login-password" class="form-control"
 									placeholder="Password" aria-label="Password" aria-describedby="login-password" />
 							</div>
-
+							<!-- pulsante -->
 							<button type="submit"
 								class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Accedi</button>
 						</form>
@@ -286,36 +300,33 @@ export default {
 				<div v-if="showRegisterForm">
 					<h3>Registrazione</h3>
 					<form @submit.prevent="register">
+						<!-- campi del form -->
 						<div class="input-group mb-2">
 							<span class="input-group-text" id="register-name"><i class="fa-regular fa-user"></i></span>
 							<input type="text" v-model="registerName" id="register-name" class="form-control"
 								placeholder="Nome" aria-label="Nome" />
 						</div>
-
 						<div class="input-group mb-3">
 							<span class="input-group-text" id="register-email">@</span>
 							<input type="email" v-model="registerEmail" id="register-email" class="form-control"
 								placeholder="Email" aria-label="Email" />
 						</div>
-
 						<div class="input-group mb-2">
 							<span class="input-group-text" id="register-password"><i
 									class="fa-solid fa-lock"></i></span>
 							<input type="password" v-model="registerPassword" id="register-password"
 								class="form-control" placeholder="Password" aria-label="Password" />
 						</div>
-
 						<div class="input mb-2">
 							<input type="password" v-model="registerPasswordConfirmation"
 								id="register-password-confirmation" class="form-control" placeholder="Conferma Password"
 								aria-label="Conferma Password" />
 						</div>
-
 						<div class="input mb-2">
 							<input type="file" @change="handleFileUpload" id="cover-image" class="form-control"
 								aria-label="Cover Image" />
 						</div>
-
+						<!-- bottone submit -->
 						<button type="submit"
 							class="btn btn-primary rounded-pill fw-medium w-100 mb-1">Iscriviti</button>
 					</form>

@@ -115,8 +115,11 @@ export const logout = async () => {
 
 export const updateProfile = async (profileData) => {
 	try {
-		const response = await axios.put(`${state.base_api_url}/profile`, profileData, {
-			headers: { Authorization: `Bearer ${getters.getToken()}` }
+		const response = await axios.post(`${state.base_api_url}/profile`, profileData, {
+			headers: {
+				'Authorization': `Bearer ${getters.getToken()}`,
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
 		});
 		const { user } = response.data;
 		/* mutations.setAuthStatus(true, user, getters.getToken()); */
@@ -216,7 +219,7 @@ export const updateTravel = async (travelId, formData) => {
 		const response = await axios.put(`${state.base_api_url}/travels/${travelId}`, formData, {
 			headers: {
 				'Authorization': `Bearer ${getters.getToken()}`,
-				'Content-Type': 'multipart/form-data' // Importante per i file e formData
+				'Content-Type': 'application/x-www-form-urlencoded'
 			}
 		});
 		return response.data;
