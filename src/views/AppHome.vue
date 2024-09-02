@@ -179,8 +179,7 @@ export default {
 			</form>
 
 			<!-- Accordion per i viaggi -->
-			<div class="accordion accordion-flush" id="accordionFlushExample"
-				v-if="isLoggedIn && this.travels && this.travels.lenght > 0">
+			<div class="accordion accordion-flush" id="accordionFlushExample" v-if="isLoggedIn && travels.length > 0">
 				<!-- Accordion per i prossimi viaggi -->
 				<div class="accordion-item">
 					<h2 class="accordion-header">
@@ -219,7 +218,7 @@ export default {
 					</div>
 				</div>
 			</div>
-			<div v-if="isLoggedIn && this.travels && this.travels.lenght === 0">
+			<div v-else>
 				<img src="/src/assets/no_steps.jpg" alt="" class="img-fluid">
 				<h5 class="text-center fw-bold" style="color:var(--tertiary-color)">Non hai ancora aggiunto nessun viaggio!
 				</h5>
