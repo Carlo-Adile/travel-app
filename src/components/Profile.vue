@@ -238,11 +238,11 @@ export default {
 
 		<!-- utente non loggato -->
 		<div v-if="isLoggedIn === false" id="my_login_hero">
-
+			<!-- hero image -->
 			<div class="mb-3">
 				<img id="hero_image" src="/src/assets/login_hero.png" alt="" class="img-fluid">
 			</div>
-
+			<!-- caption -->
 			<div class="px-3">
 				<h1 class="mb-2">Pronto a partire per la tua <br>
 					<span>prossima avventura?</span>
@@ -253,7 +253,7 @@ export default {
 					organizza ogni dettaglio con pochi clic.
 				</p>
 			</div>
-
+			<!-- pulsanti vari -->
 			<div class="px-3">
 				<button v-if="showForm === false && showRegisterForm === false" @click="toggleForm()"
 					class="btn btn-primary rounded-pill fw-medium w-100">inizia adesso</button>
@@ -323,6 +323,7 @@ export default {
 				</div>
 
 			</div>
+
 		</div>
 	</div>
 
@@ -330,7 +331,7 @@ export default {
 
 <style scoped>
 #my_login_hero {
-	height: 90vh;
+	height: 100vh;
 	width: 100vw;
 	text-align: center;
 	display: flex;
