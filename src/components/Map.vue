@@ -67,12 +67,14 @@ export default {
 			showDropdown: false,
 			chosenPoint: null,
 			fuse: null,
-			threshold: 0.3
+			threshold: 0.3,
+			poiLayerGroup: L.layerGroup(),
 		};
 	},
 	mounted() {
 		this.getUserLocation();
 		this.initializeMap().then(() => {
+			this.poiLayerGroup.addTo(this.map);
 			this.showPOIs();
 		});
 	},
@@ -88,12 +90,11 @@ export default {
 					maxZoom: 19
 				}).addTo(this.map);
 
-				let centerLatLng;
+				/* let centerLatLng; */
 
 				if (this.travelSteps.length > 0) {
 					const bounds = L.latLngBounds(this.travelSteps.map(step => [step.lat, step.lng]));
 					this.map.fitBounds(bounds);
-					centerLatLng = bounds.getCenter();
 					this.centerLatLng = bounds.getCenter();
 				} else if (this.currentLocation.lat && this.currentLocation.lng) {
 					centerLatLng = [this.currentLocation.lat, this.currentLocation.lng];
@@ -102,8 +103,8 @@ export default {
 						.openPopup();
 				}
 
-				if (centerLatLng) {
-					this.map.setView(centerLatLng, 13);
+				if (this.centerLatLng) {
+					this.map.setView(this.centerLatLng, 13);
 				}
 
 				this.travelSteps.forEach((step, index) => {
@@ -144,8 +145,8 @@ export default {
 							resolve();
 						},
 						(error) => {
-							console.error('Errore nell\'ottenere la posizione dell\'utente:', error);
-							this.currentLocation.lat = 51.505; // Coordinate predefinite
+							/* console.log('Errore nell\'ottenere la posizione dell\'utente:', error); */
+							this.currentLocation.lat = 51.505;
 							this.currentLocation.lng = -0.09;
 							this.updateMapLocation();
 							resolve();
@@ -172,8 +173,7 @@ export default {
 			/* this.map.setView([this.currentLocation.lat, this.currentLocation.lng], 13); */
 		},
 		/* overpass API di OpenStreetMap */
-		async getPOIs(lat, lng, radius = 4000) {
-			const { lat: refLat, lng: refLng } = this.centerLatLng;
+		async getPOIs(lat, lng, radius = 10000) {
 
 			// Costruisce la query per ottenere i POI
 			const overpassUrl = `
@@ -206,52 +206,81 @@ export default {
 
 		async showPOIs() {
 			if (!this.centerLatLng) {
-				console.error('centerLatLng non è definito');
+				console.log('centerLatLng non è definito');
 				return;
-			}
+			};
 
 			const { lat, lng } = this.centerLatLng;
 			const pois = await this.getPOIs(lat, lng);
 			console.log("POIs ottenuti: ", pois);
+			const excludedTypes = ['tree', 'peak', 'bookmarker', 'car', 'saddle', 'doityourself', 'medical_supply', 'playground', 'hardware', 'tyres', 'car_repair', 'chemist'];
 
 			pois.forEach(poi => {
 
-				if (poi.type === 'tree') {
-					return; // Salta i marker di tipo "tree"
+				if (excludedTypes.includes(poi.type)) {
+					return; // Salta i marker di questi tipi
 				}
 
 				const iconMapping = {
 					restaurant: 'fa-utensils', // Ristorante
+					bakery: 'fa-utensils',
 					cafe: 'fa-coffee', // Caffè
 					bar: 'fa-beer', // Bar
 					pub: 'fa-glass-whiskey', // Pub
 					fast_food: 'fa-hamburger', // Fast food
+					greengrocer: 'fa-cart-shopping',
 					library: 'fa-book', // Biblioteca
 					cinema: 'fa-film', // Cinema
 					theatre: 'fa-theater-masks', // Teatro
 					place_of_worship: 'fa-church', // Luogo di culto
 					shop: 'fa-shopping-bag', // Negozi
+					electronics: 'fa-shopping-bag',
+					hotel: 'fa-bed',
+					guest_house: 'fa-bed',
+					car_sharing: 'fa-car',
 					clothes: 'fa-shopping-bag', //vestiti
+					shoes: 'fa-shopping-bag',
 					computer: 'fa-shopping-bag', //computer
 					tourism: 'fa-landmark', // Turismo
 					leisure: 'fa-futbol', // Tempo libero (puoi cambiare con icona specifica se necessario)
 					natural: 'fa-tree', // Natura
+					attraction: 'fa-tree',
+					artwork: 'fa-palette',
+					museum: 'fa-building-columns',
 					default: 'fa-map-marker-alt' // Icona di default
 				};
 
 				const iconClass = iconMapping[poi.type] || iconMapping['default'];
 
 				const icon = L.divIcon({
-					html: `<i class="fas ${iconClass}" style="color: #000000; font-size: 20px; width: 25px; height: 25px;"></i>`, // Personalizza il colore e la dimensione
+					html: `<i class="fas ${iconClass}" style="color: #3631A2; font-size: 20px; width: 25px; height: 25px;"></i>`, // Personalizza il colore e la dimensione
 					className: 'custom-div-icon',
 					iconSize: [25, 25], // Dimensione dell'icona
 					iconAnchor: [12, 25], // Punto in cui l'icona punta alla posizione sulla mappa
 					popupAnchor: [0, -25] // Punto da dove si apre il popup
 				});
 
-				const marker = L.marker([poi.lat, poi.lng], { icon }).addTo(this.map);
-				marker.bindPopup(`<b>${poi.name}</b><br>Tipo: ${poi.type}`);
+				const marker = L.marker([poi.lat, poi.lng], { icon }).bindPopup(`<b>${poi.name}</b><br>${poi.type}`);
+				// Aggiungi il marker al layer group invece che direttamente alla mappa
+				this.poiLayerGroup.addLayer(marker);
 			});
+			this.poiLayerGroup.addTo(this.map);
+
+			this.map.on('zoomend', () => {
+				const zoomLevel = this.map.getZoom();
+				if (zoomLevel < 13) {
+					this.poiLayerGroup.remove(); // Nasconde i POI se lo zoom è inferiore a 13
+				} else {
+					this.poiLayerGroup.addTo(this.map); // Mostra i POI se lo zoom è 13 o superiore
+				}
+			});
+
+			// Mostra i POI inizialmente se lo zoom è già 13 o superiore
+			if (this.map.getZoom() >= 13) {
+				this.poiLayerGroup.addTo(this.map);
+			} else {
+				this.poiLayerGroup.remove();
+			}
 		},
 		/* funzione di ricerca */
 		updateSearch() {

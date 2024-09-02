@@ -180,14 +180,10 @@ export default {
 		},
 		/* form */
 		async toggleForm() {
-			try {
-				await this.getUserLocation();
-			} catch (error) {
-				console.error('Errore durante l\'ottenimento della posizione dell\'utente:', error);
-			} finally {
-				this.showFormMap = !this.showFormMap;
-				this.showForm = !this.showForm;
-			}
+			const locationPromise = this.getUserLocation();
+			this.showFormMap = !this.showFormMap;
+			this.showForm = !this.showForm;
+			await locationPromise;
 		},
 		async toggleFullMap() {
 			if (!this.showFullMap) {
@@ -331,7 +327,8 @@ export default {
 						<div class="circle">
 							<i :class="getTagIcon(step.tag)"></i>
 						</div>
-						<StepCard :step="step" :travel="travel" class="content" />
+						<StepCard :step="step" :travel="travel" class="content"
+							@step-deleted="loadTravelData(this.$route.params.id)" />
 
 						<div v-if="index < steps.length - 1" class="line"></div>
 					</li>

@@ -148,7 +148,7 @@ export default {
 				console.log('Tappa eliminata con successo');
 
 				// Potresti voler emettere un evento o chiamare un metodo per aggiornare lo stato del componente genitore
-				this.$emit('stepDeleted', this.step.id);
+				this.$emit('step-deleted', this.step.id);
 
 				// Chiudi il modulo di conferma eliminazione
 				this.closeForms();
