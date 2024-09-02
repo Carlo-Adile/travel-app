@@ -219,7 +219,7 @@ export default {
 					</div>
 				</div>
 			</div>
-			<div v-else>
+			<div v-if="isLoggedIn && this.travels && this.travels.lenght === 0">
 				<img src="/src/assets/no_steps.jpg" alt="" class="img-fluid">
 				<h5 class="text-center fw-bold" style="color:var(--tertiary-color)">Non hai ancora aggiunto nessun viaggio!
 				</h5>
