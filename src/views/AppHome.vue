@@ -173,30 +173,28 @@ export default {
 					<hr>
 					<div class="d-flex justify-content-center gap-2 mt-1">
 						<button type="submit" class="btn rounded-pill form_btn_confirm">Conferma</button>
-						<button type="button" class="btn border rounded-pill form_btn_cancel"
-							@click="toggleForm">Annulla</button>
+						<button type="button" class="btn border rounded-pill form_btn_cancel" @click="toggleForm">Annulla</button>
 					</div>
 				</div>
 			</form>
 
 			<!-- Accordion per i viaggi -->
-			<div class="accordion accordion-flush" id="accordionFlushExample" v-if="isLoggedIn">
+			<div class="accordion accordion-flush" id="accordionFlushExample"
+				v-if="isLoggedIn && this.travels && this.travels.lenght > 0">
 				<!-- Accordion per i prossimi viaggi -->
 				<div class="accordion-item">
 					<h2 class="accordion-header">
 						<button class="accordion-button" type="button" data-bs-toggle="collapse"
-							data-bs-target="#flush-collapseFuture" aria-expanded="true"
-							aria-controls="flush-collapseFuture">
+							data-bs-target="#flush-collapseFuture" aria-expanded="true" aria-controls="flush-collapseFuture">
 							I tuoi prossimi viaggi
 						</button>
 					</h2>
 					<div id="flush-collapseFuture" class="accordion-collapse collapse show">
 						<div class="accordion-body">
 							<transition-group appear @before-enter="beforeEnter" @enter="enter">
-								<div v-for="(travel, index) in futureTravels" :key="travel.id" :data-index="index"
-									class="travel_card" :class="{ 'highlighted': highlightedTravelId === travel.id }">
-									<TravelCard :travel="travel" @update-zindex="handleZIndexUpdate"
-										@updated-travels="loadTravels" />
+								<div v-for="(travel, index) in futureTravels" :key="travel.id" :data-index="index" class="travel_card"
+									:class="{ 'highlighted': highlightedTravelId === travel.id }">
+									<TravelCard :travel="travel" @update-zindex="handleZIndexUpdate" @updated-travels="loadTravels" />
 								</div>
 							</transition-group>
 						</div>
@@ -206,22 +204,25 @@ export default {
 				<div class="accordion-item">
 					<h2 class="accordion-header">
 						<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-							data-bs-target="#flush-collapsePast" aria-expanded="false"
-							aria-controls="flush-collapsePast">
+							data-bs-target="#flush-collapsePast" aria-expanded="false" aria-controls="flush-collapsePast">
 							Viaggi completati
 						</button>
 					</h2>
 					<div id="flush-collapsePast" class="accordion-collapse collapse">
 						<div class="accordion-body">
 							<transition-group appear @before-enter="beforeEnter" @enter="enter">
-								<div class="col-12" v-for="(travel, index) in pastTravels" :key="travel.id"
-									:data-index="index">
+								<div class="col-12" v-for="(travel, index) in pastTravels" :key="travel.id" :data-index="index">
 									<TravelCard :travel="travel" />
 								</div>
 							</transition-group>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div v-else>
+				<img src="/src/assets/no_steps.jpg" alt="" class="img-fluid">
+				<h5 class="text-center fw-bold" style="color:var(--tertiary-color)">Non hai ancora aggiunto nessun viaggio!
+				</h5>
 			</div>
 		</div>
 	</div>
