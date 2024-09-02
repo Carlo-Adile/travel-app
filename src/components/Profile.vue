@@ -248,7 +248,7 @@ export default {
 					<span>prossima avventura?</span>
 				</h1>
 				<p class="fw-medium text-secondary">
-					Con Travel Agenda, pianificare il viaggio perfetto è semplice e veloce. <br>
+					Con Travel Agenda, pianificare il viaggio perfetto è semplice e veloce.
 					Esplora itinerari, aggiungi tappe, e
 					organizza ogni dettaglio con pochi clic.
 				</p>
