@@ -244,11 +244,11 @@ export default {
 			</div>
 			<!-- caption -->
 			<div class="px-3">
-				<h1 class="mb-2">Pronto a partire per la tua <br>
+				<h1>Pronto a partire per la tua <br>
 					<span>prossima avventura?</span>
 				</h1>
 				<p class="fw-medium text-secondary">
-					Con Travel App, pianificare il viaggio perfetto è semplice e veloce. <br>
+					Con Travel Agenda, pianificare il viaggio perfetto è semplice e veloce. <br>
 					Esplora itinerari, aggiungi tappe, e
 					organizza ogni dettaglio con pochi clic.
 				</p>
@@ -336,7 +336,7 @@ export default {
 	text-align: center;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 
 	h1 {
 		color: var(--primary-color);
