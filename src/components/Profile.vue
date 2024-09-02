@@ -214,7 +214,7 @@ export default {
 						<i class="fa-solid fa-ellipsis-v"></i>
 					</button>
 					<div v-if="isPopoverVisible" class="popover-content">
-						<p @click="openUpdateProfileForm">Impostazioni</p>
+						<p @click="openUpdateProfileForm">Modidica profilo</p>
 						<p @click="logout">Logout</p>
 					</div>
 				</div>
@@ -226,17 +226,18 @@ export default {
 				<h3>Aggiorna profilo</h3>
 				<form @submit.prevent="updateProfile">
 					<!-- campi vari -->
-					<div class="input-group mb-2">
-						<span class="input-group-text" id="update-name">#</span>
+					<div class="mb-2">
+						<label for="update-name">Nome utente</label>
 						<input type="text" v-model="updatedName" placeholder="Nome utente" id="update-name"
 							class="form-control" />
 					</div>
-					<div class="input-group mb-2">
+					<!-- <div class="input-group mb-2">
 						<span class="input-group-text" id="update-email">@</span>
 						<input type="email" v-model="updatedEmail" id="update-email" placeholder="Email"
 							class="form-control" />
-					</div>
+					</div> -->
 					<div class="input mb-2">
+						<label for="update-cover-image">Immagine profilo</label>
 						<input type="file" @change="handleFileUpload" id="update-cover-image" class="form-control"
 							aria-label="Cover Image" />
 					</div>
