@@ -356,17 +356,6 @@ export default {
 	overflow: hidden;
 }
 
-#search_bar {
-	width: 95%;
-	margin: 0 auto;
-	background-color: #fff;
-
-	input[type="text"] {
-		border: none;
-		outline: none;
-	}
-}
-
 .profile-picture {
 	width: 50px;
 	height: 50px;
