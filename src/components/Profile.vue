@@ -105,7 +105,7 @@ export default {
 				await this.login();
 
 				// Aggiorna i dati del profilo
-				this.refreshData();
+				/* this.refreshData(); */
 
 			} catch (error) {
 				console.error('Registrazione fallita:', error);
