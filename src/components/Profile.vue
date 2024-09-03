@@ -102,6 +102,7 @@ export default {
 
 				console.log('Registrazione avvenuta con successo:', response.data);
 
+				this.$store.commit('setUser', response.data.user);
 				// Dopo la registrazione, esegui il login
 				await this.login();
 
