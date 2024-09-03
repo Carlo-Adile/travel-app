@@ -5,7 +5,8 @@
       <div class="mockup-phone">
         <div class="camera"></div>
         <div class="display">
-          <div class="artboard artboard-demo phone-1">
+          <div class="artboard artboard-demo phone-1" style="width: 100%;
+  height: 100%; overflow-y: scroll;">
             <router-view></router-view>
           </div>
         </div>
@@ -52,8 +53,8 @@ export default {
 }
 
 .mockup-phone {
-  /* width: 390px; */
-  /* height: 740px; */
+  width: 390px;
+  height: 740px;
   position: relative;
 }
 

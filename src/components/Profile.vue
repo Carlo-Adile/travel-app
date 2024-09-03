@@ -344,7 +344,7 @@ export default {
 <style scoped>
 #my_login_hero {
 	height: 100vh;
-	width: 100vw;
+	width: 100%;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -364,7 +364,7 @@ export default {
 	position: relative;
 	margin: 0;
 	padding: 0;
-	width: 100vw;
+	width: 100%;
 	overflow: hidden;
 }
 
