@@ -53,7 +53,7 @@ export default {
 }
 
 .mockup-phone {
-  width: 390px;
+  width: 425px;
   height: 740px;
   position: relative;
 }
