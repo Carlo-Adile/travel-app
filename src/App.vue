@@ -27,6 +27,10 @@ export default {
 </script>
 
 <style scoped>
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 #app {
   height: 100vh;
   display: flex;
@@ -41,17 +45,18 @@ export default {
   display: none;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 600px) {
   .mockup-container {
     display: block;
   }
 }
 
 .mockup-phone {
-  width: 390px;
-  height: 740px;
+  /* width: 390px; */
+  /* height: 740px; */
   position: relative;
 }
+
 
 .display {
   height: 100%;
@@ -73,9 +78,10 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
+  height: 100%;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 600px) {
   .main-content {
     display: none;
   }
