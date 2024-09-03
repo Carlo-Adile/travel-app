@@ -173,7 +173,7 @@ export default {
 	<div class="mb-2 p-0">
 		<div class="step_card d-flex justify-content-between">
 			<div>
-				<h3>{{ step.title }}</h3>
+				<h4>{{ step.title }}</h4>
 				<p v-if="step.description">{{ step.description }}</p>
 			</div>
 			<!-- Icona menu con popover -->
