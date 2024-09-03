@@ -30,7 +30,7 @@ export default {
 <style scoped>
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+/* @tailwind utilities; */
 
 #app {
   height: 100vh;
@@ -38,7 +38,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: #232323;
 }
 
 /* Nascondi il contenitore del mockup su viewport più piccoli di 1024px */
