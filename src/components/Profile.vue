@@ -259,9 +259,9 @@ export default {
 			</div>
 			<!-- caption -->
 			<div class="px-3">
-				<h1>Pronto a partire per la tua <br>
+				<h3>Pronto a partire per la tua <br>
 					<span>prossima avventura?</span>
-				</h1>
+				</h3>
 				<p class="fw-medium text-secondary">
 					Con Travel Agenda, pianificare il viaggio perfetto è semplice e veloce.
 					Esplora itinerari, aggiungi tappe, e
@@ -350,9 +350,8 @@ export default {
 	flex-direction: column;
 	justify-content: flex-start;
 
-	h1 {
+	h3 {
 		color: var(--primary-color);
-		font-size: 1.6rem !important;
 
 		span {
 			font-weight: bold;
