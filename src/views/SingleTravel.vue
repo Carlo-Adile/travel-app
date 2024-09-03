@@ -251,7 +251,7 @@ export default {
 					<router-link :to="{ name: 'Home' }"><i class="fa-solid fa-chevron-left"></i></router-link>
 					<div class="d-flex gap-2 justify-content-center">
 						<i class="fa-solid fa-plus" @click="toggleForm"></i>
-						<i class="fa-regular fa-map" @click=toggleFullMap></i>
+						<!-- <i class="fa-regular fa-map" @click=toggleFullMap></i> -->
 					</div>
 
 				</div>
@@ -296,10 +296,10 @@ export default {
 
 					<!-- Sezione della mappa -->
 					<div v-if="showFormMap" class="mb-1">
-						<div id="formMap">
+						<!-- <div id="formMap">
 							<Map :travelSteps="validSteps" :currentLocation="currentLocation" :isFormMap="true"
 								@map-click="handleMapClick" :showMenu="false" />
-						</div>
+						</div> -->
 					</div>
 					<div class="d-none">
 						<input type="text" id="lat" v-model="newStep.lat" class="form-control" placeholder="Latitudine"
@@ -345,14 +345,14 @@ export default {
 	</div>
 
 	<!-- Mostra la mappa se l'utente seleziona la mappa -->
-	<div v-if="showFullMap" style="p-0">
+<!-- 	<div v-if="showFullMap" style="p-0">
 
 		<div id="fullMap">
 			<Map ref="mapComponent" :travelSteps="validSteps" :currentLocation="currentLocation" :showRouting="false"
 				@close-map="this.showFullMap = false" @add-point="handleChosenPoint" />
 		</div>
 
-	</div>
+	</div> -->
 
 </template>
 
