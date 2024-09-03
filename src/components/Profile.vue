@@ -352,6 +352,7 @@ export default {
 
 	h1 {
 		color: var(--primary-color);
+		font-size: 1.6rem;
 
 		span {
 			font-weight: bold;
