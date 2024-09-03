@@ -13,6 +13,7 @@ export default {
 			// Variabili per il login
 			loginEmail: '',
 			loginPassword: '',
+			name: '',
 
 			// Variabili per aggiornare il profilo
 			updatedName: '',
